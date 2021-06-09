@@ -1,4 +1,4 @@
-package ollivanders.main;
+package com.ollivanders;
 
 public class Driver {
 
