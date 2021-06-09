@@ -40,6 +40,14 @@
             <artifactId>postgresql</artifactId>
             <version>42.2.18</version>
         </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2 -->
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+        
         <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
         <dependency>
             <groupId>org.mockito</groupId>
