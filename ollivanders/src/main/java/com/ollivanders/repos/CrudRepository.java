@@ -71,15 +71,17 @@ public interface CrudRepository<T> {
 	/**
 	 * Removes the object from the database based on the primaryKey
 	 * @param primaryKey the key used to locate the entry from the database
+	 * @param cascade specifies whether or not to cascade delete.
 	 * @return returns true if the entry is deleted, false if anything else occurs.
 	 */
-	boolean deleteByPrimaryKey(Object primaryKey) throws NoSuchFieldException, SQLException;
+	boolean deleteByPrimaryKey(Object primaryKey, boolean cascade) throws NoSuchFieldException, SQLException;
 	
 	/**
 	 * Removes the object from the database based on the primaryKey and table.
 	 * @param primaryKey the key used to locate the entry from the database
-	 * @param tableObj
+	 * @param tableObj is the table where the entry is located.
+	 * @param cascade specifies whether or not to cascade delete.
 	 * @return true if the entry is deleted, false if anything else occurs.
 	 */
-	boolean deleteByPrimaryKey(Object primaryKey, T tableObj) throws NoSuchFieldException, SQLException;
+	boolean deleteByPrimaryKey(Object primaryKey, T tableObj, boolean cascade) throws NoSuchFieldException, SQLException;
 }
