@@ -5,6 +5,7 @@ import java.sql.SQLException;
 /**
  * Interface for implementing a CrudReposistory. Requires classes implementing the interface to provide
  * functionality for a variety of CRUD operations.
+ * 
  * @param <T> the element type that will be accessed in the database.
  */
 public interface CrudRepository<T> {
@@ -84,4 +85,9 @@ public interface CrudRepository<T> {
 	 * @return true if the entry is deleted, false if anything else occurs.
 	 */
 	boolean deleteByPrimaryKey(Object primaryKey, T tableObj, boolean cascade) throws NoSuchFieldException, SQLException;
+	
+	/*
+	 * TODO possibly adding methods to CRUD via other fields might be useful but would require a bit more work to implement.
+	 * 		implement the above before considering implementing anything else.
+	 */
 }
