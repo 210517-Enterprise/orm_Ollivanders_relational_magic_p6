@@ -5,7 +5,11 @@ import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /*
  * A repository that can run CRUD methods for any class that extends the BaseModel.
@@ -83,11 +87,29 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	}
 	
 		
-
+	/**
+	 * Returns an arraylist that is every object stored in the class table
+	 * @return returns an arraylist of all objects in teh class table
+	 */
 	@Override
 	public List<T> getAll() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		//Establishing a connection to the DB
+		Connection conn = SessionManager.getConnection();
+		ArrayList<T> objects = new ArrayList<>();
+		
+		//Query the table to get all the objects.
+		try {
+			assert conn != null;
+			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ?");
+			pstmt.setString(1,getTableName());
+			conn.close();
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+			System.exit(1);
+		}
+		
+		return objects;
 	}
 
 
@@ -104,11 +126,52 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		return null;
 	}
 
-
+	/**
+	 * A method that will drop the class table if it exists or not
+	 */
 	@Override
-	public void removeClassTable(boolean cascade) throws NoSuchFieldException, SQLException {
-		// TODO Auto-generated method stub
+	public void dropClassTable(boolean cascade) throws NoSuchFieldException, SQLException {
+		Connection conn = SessionManager.getConnection();
 		
+		//Intial string of a SQL drop
+		String stmt = "DROP TABLE IF EXISTS " + getTableName();
+		
+		//Creating a string builder with the statement
+		StringBuilder sql = new StringBuilder(stmt);
+		
+		//Check to see if the table is allowed to cascade and if it is append cascade.
+		if(cascade) sql.append(" CASCADE");
+		
+		try {
+			assert conn != null;
+			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+			pstmt.execute();
+			conn.close();
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+			System.exit(1);
+		}
+	}
+	
+	/**
+	 * Overloaded method to allow for dropping a class without providing whether to
+	 * cascade or not.
+	 */
+	public void dropClassTable() throws NoSuchFieldException, SQLException {
+		Connection conn = SessionManager.getConnection();
+		
+		//Intial string of a SQL drop
+		String stmt = "DROP TABLE IF EXISTS " + getTableName();
+		
+		try {
+			assert conn != null;
+			PreparedStatement pstmt = conn.prepareStatement(stmt);
+			pstmt.execute();
+			conn.close();
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+			System.exit(1);
+		}
 	}
 
 
@@ -160,6 +223,27 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		return false;
 	}
 	
+	private boolean isColumnNameSafe(String col) {
+		Pattern pattern = Pattern.compile("^[a-zA-Z0-0_]+$");
+		Matcher matcher = pattern.matcher(col);
+		return matcher.matches();
+	}
+	
+	/**
+	 * Helper method that returns a string builder after all periods have been placed with underscores
+	 * @param builder
+	 * @return
+	 */
+	private StringBuilder replacePeriods(StringBuilder builder) {
+		int index = builder.indexOf(".");
+		
+		while(index != -1) {
+			builder.replace(index, index+1, "_");
+			index = builder.indexOf(".");
+		}
+		return builder;
+	}
+	
 	/**
 	 * Gets the name of the table being inserted
 	 * @return the name of the table.
@@ -181,8 +265,14 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		}
 		
 		//If no name is present get the class name and use it for the table name.
-		if(name == null) name = new StringBuilder(tClass.getName()).toString();
+		if(name == null) name = replacePeriods(new StringBuilder(tClass.getName())).toString();
 		
+		if(!isColumnNameSafe(name)) try {
+			throw new SQLSyntaxErrorException();
+		} catch (SQLSyntaxErrorException throwables) {
+			throwables.printStackTrace();
+			System.exit(1);
+		}
 		//FIXME Once you get through with some testing try edge cases where this could break.
 		return name;
 	}

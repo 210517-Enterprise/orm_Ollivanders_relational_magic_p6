@@ -46,7 +46,7 @@ public interface CrudRepository<T> {
 	 * Removes a table with the specified object.
 	 * @param cascade specifies whether to allow cascade deleting or not.
 	 */
-	void removeClassTable(boolean cascade) throws NoSuchFieldException, SQLException;
+	void dropClassTable(boolean cascade) throws NoSuchFieldException, SQLException;
 	
 	/**
 	 * Saves a specified object.
