@@ -1,17 +1,21 @@
 package com.ollivanders.repos;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ollivanders.model.SQLConstraints;
 import com.ollivanders.util.ColumnField;
 import com.ollivanders.util.ConnectionUtil;
 
@@ -171,25 +175,92 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	}
 
 	/**
-	 * Takes in an object of any type to save in the class table. 
+	 * Takes in an object of any type to save in the class table.
+	 * @param newObj the object that needs to be inserted into the DB.
 	 */
 	@Override
 	public void saveNewToClassTable(T newObj) {
-		// TODO Auto-generated method stub
+		//Retrieve the proper insertion string.
+		String sql = getInsertString();
 		
+		try {
+			Field field = tClass.getField("columns");
+			ColumnField[] columns = (ColumnField[]) field.get(null);
+			
+			Connection conn = ConnectionUtil.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			
+			int count = 1;
+			
+			//Finding the new column field that matches the class column field.
+			for(ColumnField column : columns) {
+				String fieldName = column.getColumnName();
+				Field fieldToStore = newObj.getClass().getDeclaredField(fieldName);
+				
+				//If the field happens to be private set the accesibility to true
+				if(Modifier.isPrivate(fieldToStore.getModifiers()))
+					fieldToStore.setAccessible(true);
+				
+				
+				//If you come across the serial ignore this loop
+				if(column.getColumnType().equalsIgnoreCase("serial")) 
+					continue;
+				
+				else 
+					pstmt.setObject(count, fieldToStore.get(newObj));
+				
+				//Update the count
+				count++;
+			}
+			
+			//Execute the query.
+			pstmt.execute();
+			
+		} catch (NoSuchFieldException | IllegalAccessException | SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 
-
-	@Override
-	public void saveNewToClassTable(T newObj, T tableObj) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
+	
+	/**
+	 * Finds an object based on the primary key.
+	 * @param primaryKey the key to query by
+	 * @return the Object found by the primary key.
+	 */
 	@Override
 	public T findByPrimaryKey(Object primaryKey) throws NoSuchFieldException, SQLException {
-		// TODO Auto-generated method stub
+		Field pk = null;
+		
+		//Try and see if the primary key exists within the class table
+		try {
+			pk = getPKField();
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		//Check and see if the column name is safe
+		if(!isColumnNameSafe(pk.getName())) throw new SQLSyntaxErrorException("Name contains invalid characters");
+		
+		//Creating a SQL string to query by.
+		String sql = "SELECT * FROM " + getTableName() + " WHERE " + pk.getName()+" = ?";
+		
+		try {
+			Connection conn = ConnectionUtil.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setObject(1, primaryKey);
+			ResultSet rs = pstmt.executeQuery();
+			ArrayList<T> objects = getTObjects(rs);
+			
+			if(objects.size() > 0)
+				return objects.get(0);
+			else
+				return null;
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+			System.exit(1);
+		}
 		return null;
 	}
 
@@ -274,5 +345,167 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		//FIXME Once you get through with some testing try edge cases where this could break.
 		return name;
 	}
+	
+	/**
+	 * Helper method to create an insertion string.
+	 * @return returns a string that is a SQL insert for the table class
+	 */
+	private String getInsertString() {
+		StringBuilder ib = new StringBuilder("INSERT INTO " + getTableName() + "(");
+		StringBuilder vb = new StringBuilder(" VALUES (");
+		
+		try {
+			//Getting the fields from the class
+			Field field = tClass.getField("columns");
+			ColumnField[] columns = (ColumnField[]) field.get(null);
+			
+			//Iterating through each column to get the values for the table
+			//If the column type is serial move on and do not add it.
+			for(ColumnField column : columns) {
+				if(column.getColumnType().equals("serial")) continue;
+				ib.append(column.getColumnName()).append(", ");
+				vb.append("?, ");
+			}
+			
+		} catch(NoSuchFieldException | IllegalAccessException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		//Remove the last comma and whitespace to avoid errors
+		//In both the values and insert parts of the SQL statement
+		int index = vb.lastIndexOf(", ");
+		vb.delete(index, index+2);
+		
+		index = ib.lastIndexOf(", ");
+		ib.delete(index, index+2);
+		
+		//Append the values to the insert statement
+		ib.append(vb);
+		
+		//Return the completed SQL statement.
+		return ib.toString();
+	}
+	
+	/**
+	 * Helper method to find the primary key field in an object
+	 * @return the primary key field.
+	 * @throws NoSuchFieldException if there isn't a column labelled as a primary key
+	 */
+	public Field getPKField() throws NoSuchFieldException{
+		ColumnField[] columns = getColumns();
+		
+		for(ColumnField column : columns) {
+			if(column.getConstraint().equals(SQLConstraints.PRIMARY_KEY))
+				return tClass.getDeclaredField(column.getColumnName());
+		}
+		
+		throw new NoSuchFieldException("This class does not have a primary key constraint");
+	}
+	
+	/**
+	 * Helper method that gets the columns field from tClass
+	 * @return returns the column field.
+	 */
+	private ColumnField[] getColumns() {
+		try {
+			Field dbColumns = tClass.getField("columns");
+			
+			if(Modifier.isPrivate(dbColumns.getModifiers()))
+				dbColumns.setAccessible(true);
+			
+			return(ColumnField[]) dbColumns.get(null);
+			
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			throw new NoSuchFieldException("Missing a column field");
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		return null;
+	}
+	
+	/**
+	 * Helper method that converts a result set into an arraylist<T>.
+	 * @param rs the result set to be converted
+	 * @return returns an arraylist from the result set
+	 * @throws SQLException
+	 */
+	private ArrayList<T> getTObjects(ResultSet rs) throws SQLException {
+        ColumnField[] columns = getColumns();
 
+        ArrayList<T> objects = new ArrayList<>();
+
+        while (rs.next()) {
+            Constructor<T> emptyCon= null;
+            try {
+                emptyCon = tClass.getDeclaredConstructor();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            if (Modifier.isPrivate(emptyCon.getModifiers())) {
+                emptyCon.setAccessible(true);
+            }
+
+            T emptyObject = null;
+            try {
+                emptyObject = emptyCon.newInstance();
+            } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            for (int i = 1; i <= columns.length; i++) {
+                //System.out.println("On iteration: "+i);
+                Field field = null;
+
+                String columnName = columns[i-1].getColumnName();
+
+                try {
+                    field = tClass.getDeclaredField(columnName);
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                //System.out.println("On field: "+columnName);
+
+                if (Modifier.isPrivate(field.getModifiers())) {
+                    field.setAccessible(true);
+                }
+
+                try {
+
+                    if (field.getType().isEnum()) {
+                        int constant = (int) rs.getObject(columnName) - 1;
+                        field.set(emptyObject, field.getType().getEnumConstants()[constant]);
+                    }
+                    else {
+                        Object insert = rs.getObject(columnName);
+                        if (insert.getClass().equals(BigDecimal.class)) {
+                            if (field.getType().getName().equals(Double.class.getName()) ||
+                                    field.getType().getName().equals(double.class.getName())) {
+                                field.set(emptyObject, ((BigDecimal) insert).doubleValue());
+                            }
+                        }
+                        else {
+                            field.set(emptyObject, rs.getObject(columnName));
+                        }
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
+
+            objects.add(emptyObject);
+        }
+
+        return objects;
+	}
 }
