@@ -7,9 +7,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.ollivanders.util.ColumnField;
+import com.ollivanders.util.ConnectionUtil;
 
 /*
  * A repository that can run CRUD methods for any class that extends the BaseModel.
@@ -53,7 +57,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		//Setting the columns equal to the field.
 		columns = (ColumnField[]) field.get(null);
 		
-		} catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -73,7 +77,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		
 		//Establish a connection to the DB.
 		//FIXME This might be something that can be encapsulated in a single method.
-		Connection conn = SessionManager.getConnection();
+		Connection conn = ConnectionUtil.getConnection();
 		
 		try {
 			assert conn != null;
@@ -95,7 +99,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	public List<T> getAll() throws SQLException {
 		
 		//Establishing a connection to the DB
-		Connection conn = SessionManager.getConnection();
+		Connection conn = ConnectionUtil.getConnection();
 		ArrayList<T> objects = new ArrayList<>();
 		
 		//Query the table to get all the objects.
@@ -112,14 +116,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		return objects;
 	}
 
-
-	@Override
-	public List<T> getAllOrdered(T order) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 	@Override
 	public List<T> getAllJoined(T otherTableObj) throws SQLException {
 		// TODO Auto-generated method stub
@@ -131,7 +127,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 */
 	@Override
 	public void dropClassTable(boolean cascade) throws NoSuchFieldException, SQLException {
-		Connection conn = SessionManager.getConnection();
+		Connection conn = ConnectionUtil.getConnection();
 		
 		//Intial string of a SQL drop
 		String stmt = "DROP TABLE IF EXISTS " + getTableName();
@@ -158,7 +154,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * cascade or not.
 	 */
 	public void dropClassTable() throws NoSuchFieldException, SQLException {
-		Connection conn = SessionManager.getConnection();
+		Connection conn = ConnectionUtil.getConnection();
 		
 		//Intial string of a SQL drop
 		String stmt = "DROP TABLE IF EXISTS " + getTableName();
@@ -174,7 +170,9 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		}
 	}
 
-
+	/**
+	 * Takes in an object of any type to save in the class table. 
+	 */
 	@Override
 	public void saveNewToClassTable(T newObj) {
 		// TODO Auto-generated method stub
