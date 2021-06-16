@@ -46,12 +46,6 @@ public interface CrudRepository<T> {
 	 */
 	void saveNewToClassTable(T newObj);
 	
-	/**
-	 * Saves a specified object into a specified table
-	 * @param newObj is the object to be saved
-	 * @param tableObj is the table of where its being saved
-	 */
-	void saveNewToClassTable(T newObj, T tableObj);
 	
 	/**
 	 * Finds an entry by its primary key
