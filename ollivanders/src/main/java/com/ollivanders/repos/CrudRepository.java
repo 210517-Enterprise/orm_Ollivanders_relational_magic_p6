@@ -26,14 +26,6 @@ public interface CrudRepository<T> {
 	List<T> getAll() throws SQLException;
 	
 	/**
-	 * Gets all entries from the table and orders them.
-	 * @param order the order that is used for returning the values.
-	 * @return a list of ordered values.
-	 * @throws SQLException
-	 */
-	List<T> getAllOrdered(T order) throws SQLException;
-	
-	/**
 	 * Gets all entries joined on a table.
 	 * FIXME for now the default is inner join.
 	 * @param otherTableObj a separate table object to join on
