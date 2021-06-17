@@ -264,34 +264,178 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		return null;
 	}
 
-
+	/**
+	 * Finds the entry by the column's value
+	 * @param columnName is the column name to query by.
+	 * @param columnEntry is the column entry to query by.
+	 * @return the object found through the query.
+	 */
 	@Override
-	public T findByColumnName(Object columnName) throws NoSuchFieldException, SQLException {
-		// TODO Auto-generated method stub
+	public T findByColumnName(Object columnName, Object columnEntry) throws SQLSyntaxErrorException {
+		Field entry = null;
+		
+		//See if the field exists and if it does set entry equal to it.
+		try {
+			entry = getColumnField(columnName);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		//Check to see if the column name is safe.
+		if(!isColumnNameSafe(entry.getName())) throw new SQLSyntaxErrorException("Column name contains invalid characters");
+		
+		String sql = "SELECT * FROM " + getTableName() + " WHERE " + entry.getName()+ " = ?";
+		
+		//Connect to the DB and query
+		try {
+			Connection conn = ConnectionUtil.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setObject(1,columnEntry);
+			ResultSet rs = pstmt.executeQuery();
+			ArrayList<T> objects = getTObjects(rs);
+			
+			//If the object exists return the object
+			if(objects.size() > 0)
+				return objects.get(0);
+			else
+				return null;
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+			System.exit(1);
+		}
+		
 		return null;
 	}
 
-
+	
+	/**
+	 * Returns a list of objects based on the columnName and value queried.
+	 * @param columnName the field to query on
+	 * @param columnEntry the data to query by
+	 * @return returns a list of objects that satifiy the query.
+	 */
 	@Override
-	public List<T> findAllByColumnName(Object columnName) throws NoSuchFieldException, SQLException {
-		// TODO Auto-generated method stub
+	public List<T> findAllByColumnName(Object columnName, Object columnEntry) throws NoSuchFieldException, SQLException {
+		Field entry = null;
+		
+		//See if the field exists and if it does set entry equal to it.
+		try {
+			entry = getColumnField(columnName);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		//Check to see if the column name is safe.
+		if(!isColumnNameSafe(entry.getName())) throw new SQLSyntaxErrorException("Column name contains invalid characters");
+		
+		String sql = "SELECT * FROM " + getTableName() + " WHERE " + entry.getName()+ " = ?";
+		
+		//Connect to the DB and query
+		try {
+			Connection conn = ConnectionUtil.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setObject(1,columnEntry);
+			ResultSet rs = pstmt.executeQuery();
+			ArrayList<T> objects = getTObjects(rs);
+			
+			//If the object exists return the object
+			if(objects.size() > 0)
+				return objects;
+			else
+				return null;
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+			System.exit(1);
+		}
 		return null;
 	}
 
-
+	/**
+	 * Updates an entry based on the given primary key
+	 * @param updatedObj the updated object
+	 * @return returns true if the object was updated and false if nothing was updated.
+	 */
 	@Override
 	public boolean updateByPrimaryKey(T updatedObj) {
-		// TODO Auto-generated method stub
+		//Attempt to find a primary key field
+		try {
+			Field pk = getPKField();
+			//Check the modifiers of the field and set the accessibility to true
+			if(Modifier.isPrivate(pk.getModifiers()))
+				pk.setAccessible(true);
+			
+			//Find an obj with the given id from updatedObj.
+			Object id = pk.get(updatedObj);
+			
+			//If it doesn't exist stop and return false.
+			if(findByPrimaryKey(id) == null) return false;
+		} catch (NoSuchFieldException | IllegalAccessException | SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+
+		try {
+			//Connect to the DB and update the entry
+			Connection conn = ConnectionUtil.getConnection();
+			String sql = getUpdateString();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			
+			//Modify the updated sql statement then execute
+			pstmt = getPreparedUpdate(pstmt, updatedObj);
+			pstmt.execute();
+			
+			//Return the results of if the row inserted happened or not
+			ResultSet rs = pstmt.getResultSet();
+			return rs.rowInserted();
+			
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+			System.exit(1);
+		}
+		
 		return false;
 	}
 
-
+	/**
+	 * Deletes an entry from the database using the given primary key
+	 * @param primaryKey the primary key to be deleted from the database
+	 * @return returns true if deleted, false if nothing was found.
+	 * @throws SQLSyntaxErrorException thrown when there is invalid characters in the column names
+	 */
 	@Override
 	public boolean deleteByPrimaryKey(Object primaryKey, boolean cascade) throws NoSuchFieldException, SQLException {
-		// TODO Auto-generated method stub
+		Field pk = null;
+		
+		pk = getPKField();
+		
+		if(!isColumnNameSafe(pk.getName())) throw new SQLException("Name contains invalid characters");
+		
+		//Create a query to delete by
+		String sql = "DELETE FROM " + getTableName()+" WHERE "+pk.getName()+" = ?";
+		
+		//Establish a connection and attempt to query
+		try {
+		Connection conn = ConnectionUtil.getConnection();
+		PreparedStatement pstmt = null;
+		
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setObject(1, primaryKey);
+		boolean executed = pstmt.execute();
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+			System.exit(1);
+		}
 		return false;
 	}
 	
+	/**
+	 * Helper method to check to ensure that the column name is valid
+	 * @param col the column's name to check
+	 * @return true if the column name is safe and false if its invalid.
+	 */
 	private boolean isColumnNameSafe(String col) {
 		Pattern pattern = Pattern.compile("^[a-zA-Z0-0_]+$");
 		Matcher matcher = pattern.matcher(col);
@@ -301,7 +445,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	/**
 	 * Helper method that returns a string builder after all periods have been placed with underscores
 	 * @param builder
-	 * @return
+	 * @return returns the string with periods replaced with _.
 	 */
 	private StringBuilder replacePeriods(StringBuilder builder) {
 		int index = builder.indexOf(".");
@@ -508,4 +652,107 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 
         return objects;
 	}
+
+	/**
+	 * Helper method to return the field of the columnName from tClass.
+	 * 
+	 * @param columnName the columnName that the class might have
+	 * @return the field of the columnName
+	 * @throws NoSuchFieldException if there is not a column with the name given.
+	 */
+	public Field getColumnField(Object columnName) throws NoSuchFieldException {
+		ColumnField[] columns = getColumns();
+		
+		//Attempt to find a column whose name matches the column name
+
+			for (ColumnField col : columns) {
+				//If the column's name matches the param return the field.
+				if (col.getColumnName().equals(columnName.toString()))
+					return tClass.getDeclaredField(col.getColumnName());
+			}
+			//Otherwise throw an exception that the field doesn't exist.
+			throw new NoSuchFieldException("No field with the specified name");
+	}
+	
+	/**
+	 * Helper method that creates the update string
+	 * @return returns a string version of the update statement.
+	 * @throws SQLSyntaxErrorException if the column field in the class has invalid characters.
+	 */
+	private String getUpdateString() throws SQLSyntaxErrorException {
+		 StringBuilder builder = new StringBuilder("Update "+getTableName()+" SET ");
+	        StringBuilder qualifier = new StringBuilder("WHERE ");
+
+	        ColumnField[] columns = getColumns();
+
+	        for (ColumnField column: columns){
+
+	            String columnName = column.getColumnName();
+	            if (!isColumnNameSafe(columnName)) throw new SQLSyntaxErrorException("Column name contains invalid characters!");
+
+	            if (column.getConstraint() == SQLConstraints.PRIMARY_KEY) {
+	                qualifier.append(columnName).append(" = ?");
+	            } else {
+	                if (column.getColumnType().equalsIgnoreCase("serial")) {
+	                    continue;
+	                }
+	                builder.append(columnName).append(" = ?, ");
+	            }
+	        }
+
+	        int index = builder.lastIndexOf(", ");
+	        builder.delete(index, index+2);
+	        builder.append(qualifier);
+
+	        return builder.toString();
+	}
+	
+	/**
+     * A helper method that preps the Update Prepared Statement
+     * @param pstmt the update statement to be updated
+     * @param updatedObject the object to be converted into an update string
+     * @return returns a {re[aredStatement that is the update statement
+     */
+    private PreparedStatement getPreparedUpdate(PreparedStatement pstmt, T updatedObject){
+        ColumnField[] columns = getColumns();
+
+        int count = 1;
+
+        for (ColumnField column: columns) {
+
+            Object insert = null;
+
+            try {
+                Field fieldToInsert = tClass.getDeclaredField(column.getColumnName());
+
+                if (Modifier.isPrivate(fieldToInsert.getModifiers())) {
+                    fieldToInsert.setAccessible(true);
+                }
+
+                insert = fieldToInsert.get(updatedObject);
+
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+            try {
+                if (column.getConstraint() == SQLConstraints.PRIMARY_KEY) {
+                    pstmt.setObject(columns.length, insert);
+                } else {
+                    if (insert.getClass().isEnum()) {
+                        int store = ((Enum) insert).ordinal()+1;
+                        pstmt.setInt(count, store);
+                    } else {
+                        pstmt.setObject(count, insert);
+                    }
+                    count++;
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+                System.exit(1);
+            }
+        }
+
+        return pstmt;
+    }
 }
