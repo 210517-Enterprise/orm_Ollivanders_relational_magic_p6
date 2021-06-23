@@ -174,6 +174,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		
 		//Check to see if the primary key exists within the class table.
 		Field pk = null;
+		ArrayList<T> objs = null;
 		try {
 			//Find the primary key field if one exists.
 			pk = getPKField();
@@ -194,25 +195,21 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setObject(1, primaryKey);
 			ResultSet rs = pstmt.executeQuery();
-			ArrayList<T> objs = getTObjects(rs);
+			objs = getTObjects(rs);
 			
-			//Check to see if the result set returned anything.
-			if(!objs.isEmpty())
-				return objs.get(0);
-			else
-				return null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		return null;
+		//Return the result of the query.
+		return ((!objs.isEmpty()) ? objs.get(0) : null);
 	}
 
 
 	@Override
 	public T findByColumnName(Object columnName) throws NoSuchFieldException, SQLException {
 		Field entry = null;
-		
+		ArrayList<T> objects = null;
 		//See if the field exists and if not do not return anything
 		try {
 			entry = tClass.getField(columnName.toString());
@@ -223,14 +220,61 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		
 		//Check to ensure that the columnname is safe.
 		if(!isColumnNameSafe(entry.getName())) throw new SQLException("Column name contains invalid characters.");
-		return null;
+		
+		//Create a query to locate the entry by its columnname
+		//As a note this could return more then one entry but only the first will be considered.
+		
+		String sql = "Select * from " + getTableName() + " WHERE " + entry.getName() + "= ?";
+		
+		//Connect to the DB and attempt the query.
+		
+		try {
+			Connection conn = ConnectionUtil.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setObject(1, columnName);
+			ResultSet rs = pstmt.executeQuery();
+			objects = getTObjects(rs);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return ((!objects.isEmpty()) ? objects.get(0) : null);
 	}
 
 
 	@Override
 	public List<T> findAllByColumnName(Object columnName) throws NoSuchFieldException, SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Field entry = null;
+		ArrayList<T> objects = null;
+		//See if the field exists and if not do not return anything
+		try {
+			entry = tClass.getField(columnName.toString());
+		} catch(NoSuchFieldException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		//Check to ensure that the columnname is safe.
+		if(!isColumnNameSafe(entry.getName())) throw new SQLException("Column name contains invalid characters.");
+		
+		//Create a query to locate the entry by its columnname
+		//As a note this could return more then one entry but only the first will be considered.
+		
+		String sql = "Select * from " + getTableName() + " WHERE " + entry.getName() + "= ?";
+		
+		//Connect to the DB and attempt the query.
+		
+		try {
+			Connection conn = ConnectionUtil.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setObject(1, columnName);
+			ResultSet rs = pstmt.executeQuery();
+			objects = getTObjects(rs);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return ((!objects.isEmpty()) ? objects : null);
 	}
 
 
