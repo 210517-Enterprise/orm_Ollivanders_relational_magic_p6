@@ -1,5 +1,7 @@
 package com.ollivanders.repos;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
@@ -7,11 +9,12 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ollivanders.model.SQLConstraints;
 import com.ollivanders.util.ColumnField;
 import com.ollivanders.util.ConnectionUtil;
 
@@ -34,58 +37,82 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 
 	
 	/**
-	 * Creates the class table.
+	 * Creates a class table based on the tClass field. The createClassTable method
+	 * will first get all the fields that are present within the class then check the
+	 * annotations to see if any fields are labeled. The annotations used are:
+	 * 
+	 * Column - specifies a column within tClass.
+	 * Id 	  - specifies that the field is a primary key.
+	 * 
 	 */
 	@Override
 	public void createClassTable() throws NoSuchFieldException, SQLException {
-		Field field = null;
+		//Acquires the list of fields given by the class table.
+		List<Field> fields = new ArrayList<Field>(Arrays.asList(tClass.getFields()));
 		
-		//Looks for the columns from the class if they exist.
-		try {
-			field = tClass.getField("columns");
-		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+		//For each field in the tClass loop through and add them to a columns Array
+		//If no id is available one will be created. ColumnField will be preallocated
+		ColumnField[] columns = new ColumnField[fields.size()];
+		
+		for(Field f : fields) {
+			boolean isPrimaryKey = false;
+			boolean fieldIsColumn = false;
+			
+			//If the modifier happens to be private set it to true.
+			if(Modifier.isPrivate(f.getModifiers())) f.setAccessible(true);
+			
+			//Check to ensure the field has all necessary components to be added to the columns.
+			try {
+				//Make sure the field has an annotation for the column.
+				if(f.getAnnotations().length != 0) {
+					//Check all annotations just to be safe.
+					Annotation[] annoArr = f.getAnnotations();
+					for(Annotation a : annoArr) {
+						//Check to see if the field is a column
+						if(a.annotationType().equals(com.ollivanders.annotations.Column.class)) 
+							fieldIsColumn = true;
+						if(a.annotationType().equals(com.ollivanders.annotations.Id.class))
+							isPrimaryKey = true;
+					}
+				}
+				
+				//So long as the field is indeed a field, get the name and type, and constraint.
+				//Note if no constraint is given no SQL constraints will be used.
+				if(fieldIsColumn) {
+					ColumnField tClassColumn;
+					//Check to see if the column is an ID and if it is specify it as a primary key.
+					if(isPrimaryKey)
+						tClassColumn = new ColumnField(f.getName().toString(),f.getType().toString(),SQLConstraints.PRIMARY_KEY);
+					tClassColumn = new ColumnField(f.getName().toString(),f.getType().toString(),SQLConstraints.NONE);
+				}
+			
+				//Catch any exceptions that may occur.
+			} catch(IllegalArgumentException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
 		}
 		
-		ColumnField[] columns = null; //FIXME ColumnField class needs to be implemented for this to work
+		//Create the query that will be used to create a table.
+		StringBuilder queryStr = new StringBuilder("CREATE TABLE " + tClass.getName() + "(\n");
 		
-		//Checking to see if the field in question is private, if it is make it accessible.
-		try {
-			assert field != null;
-			if(Modifier.isPrivate(field.getModifiers())) field.setAccessible(true);
-		 
-		//Setting the columns equal to the field.
-		columns = (ColumnField[]) field.get(null);
-		
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		
-		//Creating the query that will be used to create a new table.
-		StringBuilder b = new StringBuilder("CREATE TABLE " + getTableName()+"(\n");
-		
-		//Make sure the columns is not null then append it to the builder
+		//Assert that the columns are not null and then continue.
 		assert columns != null;
 		for(ColumnField c : columns) {
-			String line = c.getRowAsString()+"\n";
-			b.append(line);
+			String line = c.getRowAsString();
+			queryStr.append(line);
 		}
 		
-		//Remove the last comma and replace it with a closing sql statement.
-		b.replace(b.lastIndexOf(","), b.length(), ");");
+		//Replace the last comma with the closing part of a SQL query.
+		queryStr.replace(queryStr.lastIndexOf(","), queryStr.length(), ");");
 		
-		//Establish a connection to the DB.
-		//FIXME This might be something that can be encapsulated in a single method.
-		Connection conn = ConnectionUtil.getConnection();
-		
+		//Establish the Connection to the DB and execute the query.
 		try {
-			assert conn != null;
-			PreparedStatement pstmt = conn.prepareStatement(b.toString());
+			Connection conn = ConnectionUtil.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(queryStr.toString());
 			pstmt.execute();
-			conn.close();
-		} catch (SQLException throwables) {
-			throwables.printStackTrace();
+		} catch(SQLException e) {
+			e.printStackTrace();
 			System.exit(1);
 		}
 	}
@@ -178,14 +205,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		// TODO Auto-generated method stub
 		
 	}
-
-
-	@Override
-	public void saveNewToClassTable(T newObj, T tableObj) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	@Override
 	public T findByPrimaryKey(Object primaryKey) throws NoSuchFieldException, SQLException {
