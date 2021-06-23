@@ -14,6 +14,7 @@ import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,7 +44,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * Creates a class table based on the tClass field. The createClassTable method
 	 */
 	@Override
-	public void createClassTable() throws NoSuchFieldException, SQLException {
+	public void createClassTable() {
 		
 		//Make a call to the helper method to acquire the column fields from tClass
 		ColumnField[] columns = getColFields();
@@ -109,7 +110,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * @param cascade determines whether or not to cascade on drop or not.
 	 */
 	@Override
-	public void dropClassTable(boolean cascade) throws NoSuchFieldException, SQLException {
+	public void dropClassTable(boolean cascade) {
 		Connection conn = ConnectionUtil.getConnection();
 		
 		//Intial string of a SQL drop
@@ -136,7 +137,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * Overloaded method to allow for dropping a class without providing whether to
 	 * cascade or not.
 	 */
-	public void dropClassTable() throws NoSuchFieldException, SQLException {
+	public void dropClassTable() {
 		Connection conn = ConnectionUtil.getConnection();
 		
 		//Intial string of a SQL drop
@@ -348,6 +349,41 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		return matcher.matches();
 	}
 	
+	public ArrayList<T> searchByFields(Map<String, Object> qualifiers) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM "+tClass.getName()+" WHERE ");
+
+        
+
+        for (Map.Entry<String, Object> entry : qualifiers.entrySet()) {
+            sql.append(entry.getKey()).append( " = ? AND ");
+        }
+
+        int index = sql.lastIndexOf(" AND ");
+        sql.delete(index, index+5);
+
+        try {
+        	Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement stmt= conn.prepareStatement(sql.toString());
+
+            int counter = 1;
+            for (Map.Entry<String, Object> entry : qualifiers.entrySet()) {
+                stmt.setObject(counter, entry.getValue());
+                counter++;
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            ArrayList<T> found = getTObjects(rs);
+
+            return found;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            System.exit(1);
+        }
+
+        return null;
+    }
+	
 	/**
 	 * Helper method that returns a string builder after all periods have been placed with underscores
 	 * @param builder
@@ -400,7 +436,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * @return the field that is the primary key.
 	 * @throws NoSuchFieldException if no field is a primary key.
 	 */
-	private Field getPKField() throws NoSuchFieldException{
+	public Field getPKField() throws NoSuchFieldException{
 		//Make a call to the helper method to acquire the column fields.
 		ColumnField[] columns = getColFields();
 		
