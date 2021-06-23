@@ -280,15 +280,66 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 
 	@Override
 	public boolean updateByPrimaryKey(T updatedObj) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		//Attempt to see if the class has a pk field.
+		try {
+			Field pk = getPKField();
+			if(Modifier.isPrivate(pk.getModifiers()))
+				pk.setAccessible(true);
+			
+			//Set an ID equal to the pk of the updated object.
+			Object id = pk.get(updatedObj);
+			
+			//Check to see if the primary key exists within the DB.
+			if(findByPrimaryKey(id) == null) return false;
+		} catch (NoSuchFieldException | IllegalAccessException | SQLException e) {
+			e.printStackTrace();
+			System.err.println("No object found by that primary key.");
+			return false;
+		}
+		
+		//Attempt to query the DB
+		try {
+			Connection conn = ConnectionUtil.getConnection();
+			String sql = getUpdateString().toLowerCase();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			
+			//Modify the updated sql statement then execute.
+			pstmt = getPreparedUpdate(pstmt, updatedObj);
+			pstmt.executeQuery();
+			
+			ResultSet rs = pstmt.getResultSet();
+			return rs.rowInserted();
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 
 	@Override
 	public boolean deleteByPrimaryKey(Object primaryKey, boolean cascade) throws NoSuchFieldException, SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		Field pk = null;
+		boolean executed = false;
+
+		pk = getPKField();
+
+		if(!isColumnNameSafe(pk.getName())) throw new SQLException("Name contains invalid characters");
+
+		//Create a query to delete by
+		String sql = "DELETE FROM " + tClass.getName()+" WHERE "+pk.getName()+" = ?";
+
+		//Establish a connection and attempt to query
+		try {
+		Connection conn = ConnectionUtil.getConnection();
+		PreparedStatement pstmt = conn.prepareStatement(sql.toLowerCase());
+		pstmt.setObject(1, primaryKey);
+		executed = pstmt.execute();
+		} catch (SQLException throwables) {
+			throwables.printStackTrace();
+			return false;
+		}
+		return executed;
 	}
 	
 	private boolean isColumnNameSafe(String col) {
@@ -440,6 +491,39 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	}
 	
 	/**
+	 * Helper method that creates the update string
+	 * @return returns a string version of the update statement.
+	 * @throws SQLSyntaxErrorException if the column field in the class has invalid characters.
+	 */
+	private String getUpdateString() throws SQLSyntaxErrorException {
+		 StringBuilder builder = new StringBuilder("Update "+tClass.getName()+" SET ");
+	        StringBuilder qualifier = new StringBuilder("WHERE ");
+
+	        ColumnField[] columns = getColFields();
+
+	        for (ColumnField column: columns){
+
+	            String columnName = column.getColumnName();
+	            if (!isColumnNameSafe(columnName)) throw new SQLSyntaxErrorException("Column name contains invalid characters!");
+
+	            if (column.getConstraint() == SQLConstraints.PRIMARY_KEY) {
+	                qualifier.append(columnName).append(" = ?");
+	            } else {
+	                if (column.getColumnType().equalsIgnoreCase("serial")) {
+	                    continue;
+	                }
+	                builder.append(columnName).append(" = ?, ");
+	            }
+	        }
+
+	        int index = builder.lastIndexOf(", ");
+	        builder.delete(index, index+2);
+	        builder.append(qualifier);
+
+	        return builder.toString();
+	}
+	
+	/**
 	 * Helper method to find the column fields from tClass. Effectively a ColumnField is:
 	 * - The name of the field.
 	 * - The type of the field.
@@ -502,4 +586,53 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		}
 		return columns;
 	}
+	
+	/**
+     * A helper method that preps the Update Prepared Statement
+     * @param pstmt the update statement to be updated
+     * @param updatedObject the object to be converted into an update string
+     * @return returns a {re[aredStatement that is the update statement
+     */
+    private PreparedStatement getPreparedUpdate(PreparedStatement pstmt, T updatedObject){
+        ColumnField[] columns = getColFields();
+
+        int count = 1;
+
+        for (ColumnField column: columns) {
+
+            Object insert = null;
+
+            try {
+                Field fieldToInsert = tClass.getDeclaredField(column.getColumnName());
+
+                if (Modifier.isPrivate(fieldToInsert.getModifiers())) {
+                    fieldToInsert.setAccessible(true);
+                }
+
+                insert = fieldToInsert.get(updatedObject);
+
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+            try {
+                if (column.getConstraint() == SQLConstraints.PRIMARY_KEY) {
+                    pstmt.setObject(columns.length, insert);
+                } else {
+                    if (insert.getClass().isEnum()) {
+                        int store = ((Enum) insert).ordinal()+1;
+                        pstmt.setInt(count, store);
+                    } else {
+                        pstmt.setObject(count, insert);
+                    }
+                    count++;
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+                System.exit(1);
+            }
+        }
+
+        return pstmt;
+    }
 }
