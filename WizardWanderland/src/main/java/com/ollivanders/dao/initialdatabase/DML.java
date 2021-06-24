@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ollivanders.model.Ingredient;
+import com.ollivanders.services.ClassService;
 
 public class DML {
 	
-	public static List<Ingredient> getIngredients() {
+	public static void setInitialIngredients() {
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
 		
 		// add wood ingredients
@@ -73,7 +74,13 @@ public class DML {
 		ingredients.add(new Ingredient( "core", "jackalope antler", 723));
 		ingredients.add(new Ingredient( "core", "basilisk horn", 15999));
 		
-		return ingredients;
+		// generate service obj
+		ClassService<Ingredient> ingredientService = new ClassService<Ingredient>(Ingredient.class);
+		
+		// add items to Table
+		for(Ingredient ing : ingredients) {
+			ingredientService.save(ing);
+		}
 	}
 	
 

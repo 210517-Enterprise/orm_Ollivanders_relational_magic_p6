@@ -20,7 +20,7 @@ public class Ingredient {
 		super();
 	}
 
-	public Ingredient(String name, String type, double cost) {
+	public Ingredient(String type, String name, double cost) {
 		super();
 		this.name = name;
 		this.type = type;
