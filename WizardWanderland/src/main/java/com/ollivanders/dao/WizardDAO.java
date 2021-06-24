@@ -1,10 +1,12 @@
 package com.ollivanders.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ollivanders.model.Ingredient;
 import com.ollivanders.model.Wizard;
 import com.ollivanders.services.ClassService;
 
@@ -41,13 +43,12 @@ public class WizardDAO {
 		}
 		return false;
 	}
-	
-	// FIXME TODO 
-	public List<Wizard> find(Wizard wizard) { // find Wizard by field
+
+	public List<Wizard> find(Map<String, Object> filterBy) { // find wizard by field
 		try {
-			return wizRepo.delete(wizard);
+			return wizRepo.find(filterBy);
 		} catch (Exception e) {
-			log.warn("Unable to find: " + wizard.toString());
+			log.warn("Unable to find wizards using: " + filterBy.toString());
 		}
 		return null;
 	}

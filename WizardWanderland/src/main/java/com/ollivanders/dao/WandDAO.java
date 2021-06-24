@@ -1,10 +1,12 @@
 package com.ollivanders.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ollivanders.model.Ingredient;
 import com.ollivanders.model.Wand;
 import com.ollivanders.services.ClassService;
 
@@ -42,12 +44,11 @@ public class WandDAO {
 		return false;
 	}
 	
-	// FIXME TODO 
-	public List<Wand> find(Wand wand) { // find Wand by field
+	public List<Wand> find(Map<String, Object> filterBy) { // find wand by fields
 		try {
-			return wandRepo.delete(wand);
+			return wandRepo.find(filterBy);
 		} catch (Exception e) {
-			log.warn("Unable to find: " + wand.toString());
+			log.warn("Unable to find wands using: " + filterBy.toString());
 		}
 		return null;
 	}

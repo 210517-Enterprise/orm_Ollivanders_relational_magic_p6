@@ -124,23 +124,10 @@ public class ClassService<T> {
     	return null;
     }
     
-    public T findByColumnName(Object colName){
+    public ArrayList<T> getAll(){
     	try {
-			return repo.findByColumnName(colName);
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return repo.getAll();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	return null;
-    }
-    
-    public ArrayList<T> findAllByColumnName(Object colName){
-    	try {
-			return (ArrayList<T>) repo.findAllByColumnName(colName);
-		} catch (NoSuchFieldException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

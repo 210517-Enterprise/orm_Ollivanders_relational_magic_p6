@@ -88,18 +88,20 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * @return returns an arraylist of all objects in teh class table
 	 */
 	@Override
-	public List<T> getAll() throws SQLException {
+	public ArrayList<T> getAll() throws SQLException {
 		
-		//Establishing a connection to the DB
-		Connection conn = ConnectionUtil.getConnection();
 		ArrayList<T> objects = new ArrayList<>();
 		
 		//Query the table to get all the objects.
 		try {
-			assert conn != null;
-			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ?");
-			pstmt.setString(1,tClass.getSimpleName().toLowerCase());
-			conn.close();
+			//Establishing a connection to the DB
+			Connection conn = ConnectionUtil.getConnection();
+			
+
+			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM " + tClass.getSimpleName().toLowerCase());
+			ResultSet rs = pstmt.executeQuery();
+			objects = getTObjects(rs);
+			
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
 			System.exit(1);
