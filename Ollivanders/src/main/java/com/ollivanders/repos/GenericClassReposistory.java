@@ -50,8 +50,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		ColumnField[] columns = getColFields();
 		
 		//Create the query that will be used to create a table.
-		StringBuilder queryStr = new StringBuilder("CREATE TABLE " + "public." + tClass.getSimpleName().toLowerCase() + "(");
-		String queryStrTemp = queryStr.toString(); //FIXME delete after testing
+		StringBuilder queryStr = new StringBuilder("CREATE TABLE "+ tClass.getSimpleName().toLowerCase() + "(");
 		//Assert that the columns are not null and then continue.
 		assert columns != null;
 		for(ColumnField c : columns) {
@@ -61,15 +60,13 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		
 		//Replace the last comma with the closing part of a SQL query.
 		queryStr.replace(queryStr.lastIndexOf(","), queryStr.length(), ");");
-		System.out.println("Current query string: " + queryStr.toString().toLowerCase());
 		
 		//Establish the Connection to the DB and execute the query.
 		try {
 			Connection conn = ConnectionUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(queryStr.toString().toLowerCase());
-			boolean executed = pstmt.execute();
-			if(executed) System.out.println("The query was executed");
-			else System.out.println("The query did not execute");
+			System.out.println("Current query string: " + queryStr.toString().toLowerCase());
+			pstmt.execute();
 		} catch(SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -117,7 +114,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		
 		
 		//Intial string of a SQL drop
-		String stmt = "DROP TABLE IF EXISTS " + "public." +tClass.getSimpleName().toLowerCase();
+		String stmt = "DROP TABLE IF EXISTS " + tClass.getSimpleName();
 		
 		//Creating a string builder with the statement
 		StringBuilder sql = new StringBuilder(stmt);
@@ -129,15 +126,11 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		
 		try {
 			Connection conn = ConnectionUtil.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
-			System.out.println("Executing query: " + sql.toString());
-			boolean executed = pstmt.execute();
-			if(executed) System.out.println("The query was executed");
-			else System.out.println("The query did not execute");
-			conn.close();
+			PreparedStatement pstmt = conn.prepareStatement(sql.toString().toLowerCase());
+			System.out.println("Executing query: " + sql.toString().toLowerCase());
+			pstmt.execute();
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
-			System.exit(1);
 		}
 	}
 	

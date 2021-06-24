@@ -19,6 +19,7 @@ public class TestDriver {
 		
 		cs.dropClassTable();   //This should remove the class table
 		cs.createClassTable(); //This should make a person table
+		
+		cs.save(p);
 	}
-
 }
