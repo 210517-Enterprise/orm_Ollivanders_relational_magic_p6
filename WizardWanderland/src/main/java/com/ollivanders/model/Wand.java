@@ -11,10 +11,10 @@ public class Wand {
 	@Id(columnName="wand_id", isSerial = true, isUnique = true)
 	private int id;
 	
-	@JoinColumn(columnName = "wood", foreignTableName = "ingredient", foreignColumnName = "id")
+	@JoinColumn(columnName = "wood", foreignTableName = "ingredient", foreignColumnName = "name_id")
 	private String wood;
 	
-	@JoinColumn(columnName = "core", foreignTableName = "ingredient", foreignColumnName = "id")
+	@JoinColumn(columnName = "core", foreignTableName = "ingredient", foreignColumnName = "name_id")
 	private String core;
 	
 	@Column(columnName="length")
