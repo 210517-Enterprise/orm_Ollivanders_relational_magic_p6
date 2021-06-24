@@ -85,11 +85,4 @@ public interface CrudRepository<T> {
 	 * @return returns true if the entry is deleted, false if anything else occurs.
 	 */
 	boolean deleteByPrimaryKey(Object primaryKey, boolean cascade) throws NoSuchFieldException, SQLException;
-
-	void saveNewToClassTable(T newObj, T tableObj);
-	
-	/*
-	 * TODO possibly adding methods to CRUD via other fields might be useful but would require a bit more work to implement.
-	 * 		implement the above before considering implementing anything else.
-	 */
 }
