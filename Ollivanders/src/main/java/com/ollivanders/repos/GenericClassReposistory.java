@@ -161,8 +161,37 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 */
 	@Override
 	public void saveNewToClassTable(T newObj) {
+		String sql = getInsertString();
 		
-		
+		try {
+			ColumnField[] columns = getColFields();
+			Connection conn = ConnectionUtil.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			
+			int count = 1;
+			
+			for(ColumnField c : columns) {
+				String fieldName = c.getColumnName();
+				Field fieldToStore = newObj.getClass().getDeclaredField(fieldName);
+				
+				//IF the field happens to be private set the accessibility to true
+				if(Modifier.isPrivate(fieldToStore.getModifiers()))
+					fieldToStore.setAccessible(true);
+				
+				if(c.getColumnType().equalsIgnoreCase("serial"))
+					continue;
+				
+				else
+					pstmt.setObject(count, fieldToStore.get(newObj));
+				
+				//Update the count
+				count++;
+			}
+			
+			pstmt.execute();
+		} catch (NoSuchFieldException | IllegalAccessException | SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -363,7 +392,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 
         try {
         	Connection conn = ConnectionUtil.getConnection();
-            PreparedStatement stmt= conn.prepareStatement(sql.toString());
+            PreparedStatement stmt= conn.prepareStatement(sql.toString().toLowerCase());
 
             int counter = 1;
             for (Map.Entry<String, Object> entry : qualifiers.entrySet()) {
@@ -670,5 +699,28 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
         }
 
         return pstmt;
+    }
+    
+	private String getInsertString() {
+    	StringBuilder ib = new StringBuilder("INSERT INTO " + tClass.getName() + "(");
+    	StringBuilder vb = new StringBuilder("VALUES (");
+    	
+    	ColumnField[] columns = getColFields();
+    	
+    	for(ColumnField c : columns) {
+    		if(c.getColumnType().equals("serial")) continue;
+    		ib.append(c.getColumnName()).append(", ");
+    		vb.append("?, ");
+    	}
+    	
+    	int index = vb.lastIndexOf(", ");
+    	vb.delete(index, index+2);
+    	
+    	index = ib.lastIndexOf(", ");
+    	ib.delete(index, index+2);
+    	
+    	ib.append(vb);
+    	
+    	return ib.toString();
     }
 }
