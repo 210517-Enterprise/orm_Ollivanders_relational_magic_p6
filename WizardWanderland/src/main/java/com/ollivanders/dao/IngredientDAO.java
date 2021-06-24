@@ -1,6 +1,7 @@
 package com.ollivanders.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,12 +43,11 @@ public class IngredientDAO {
 		return false;
 	}
 	
-	// FIXME TODO 
-	public List<Ingredient> find(Ingredient ingredient) { // find ingredient by field
+	public List<Ingredient> find(Map<String, Object> filterBy) { // find ingredient by field
 		try {
-			return ingRepo.delete(ingredient);
+			return ingRepo.find(filterBy);
 		} catch (Exception e) {
-			log.warn("Unable to find: " + ingredient.toString());
+			log.warn("Unable to find ingredients using: " + filterBy.toString());
 		}
 		return null;
 	}
