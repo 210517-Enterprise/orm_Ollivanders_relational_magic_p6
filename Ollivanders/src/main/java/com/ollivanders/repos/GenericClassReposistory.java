@@ -50,8 +50,8 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		ColumnField[] columns = getColFields();
 		
 		//Create the query that will be used to create a table.
-		StringBuilder queryStr = new StringBuilder("CREATE TABLE " + tClass.getName() + "(\n");
-		
+		StringBuilder queryStr = new StringBuilder("CREATE TABLE " + "public." + tClass.getSimpleName().toLowerCase() + "(");
+		String queryStrTemp = queryStr.toString(); //FIXME delete after testing
 		//Assert that the columns are not null and then continue.
 		assert columns != null;
 		for(ColumnField c : columns) {
@@ -61,12 +61,15 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		
 		//Replace the last comma with the closing part of a SQL query.
 		queryStr.replace(queryStr.lastIndexOf(","), queryStr.length(), ");");
+		System.out.println("Current query string: " + queryStr.toString().toLowerCase());
 		
 		//Establish the Connection to the DB and execute the query.
 		try {
 			Connection conn = ConnectionUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(queryStr.toString().toLowerCase());
-			pstmt.execute();
+			boolean executed = pstmt.execute();
+			if(executed) System.out.println("The query was executed");
+			else System.out.println("The query did not execute");
 		} catch(SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -89,7 +92,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		try {
 			assert conn != null;
 			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ?");
-			pstmt.setString(1,getTableName());
+			pstmt.setString(1,tClass.getSimpleName().toLowerCase());
 			conn.close();
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
@@ -111,10 +114,10 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 */
 	@Override
 	public void dropClassTable(boolean cascade) {
-		Connection conn = ConnectionUtil.getConnection();
+		
 		
 		//Intial string of a SQL drop
-		String stmt = "DROP TABLE IF EXISTS " + getTableName();
+		String stmt = "DROP TABLE IF EXISTS " + "public." +tClass.getSimpleName().toLowerCase();
 		
 		//Creating a string builder with the statement
 		StringBuilder sql = new StringBuilder(stmt);
@@ -122,10 +125,15 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		//Check to see if the table is allowed to cascade and if it is append cascade.
 		if(cascade) sql.append(" CASCADE");
 		
+		sql.append(";");
+		
 		try {
-			assert conn != null;
+			Connection conn = ConnectionUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
-			pstmt.execute();
+			System.out.println("Executing query: " + sql.toString());
+			boolean executed = pstmt.execute();
+			if(executed) System.out.println("The query was executed");
+			else System.out.println("The query did not execute");
 			conn.close();
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
@@ -141,7 +149,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		Connection conn = ConnectionUtil.getConnection();
 		
 		//Intial string of a SQL drop
-		String stmt = "DROP TABLE IF EXISTS " + getTableName();
+		String stmt = "DROP TABLE IF EXISTS " + tClass.getSimpleName().toLowerCase();
 		
 		try {
 			assert conn != null;
@@ -178,7 +186,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 				if(Modifier.isPrivate(fieldToStore.getModifiers()))
 					fieldToStore.setAccessible(true);
 				
-				if(c.getColumnType().equalsIgnoreCase("serial"))
+				if(c.getColumnType().equals(SQLType.SERIAL))
 					continue;
 				
 				else
@@ -217,7 +225,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		if(!isColumnNameSafe(pk.getName())) throw new SQLException("Name contains invalid characters.");
 		
 		//Create a SQL string to query the table by.
-		String sql = "Select * FROM " + tClass.getName().toLowerCase() + " WHERE " + pk.getName() +"= ?";
+		String sql = "Select * FROM " + tClass.getSimpleName().toLowerCase() + " WHERE " + pk.getName() +"= ?";
 		
 		//Establish a connection and query the database.
 		try {
@@ -254,7 +262,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		//Create a query to locate the entry by its columnname
 		//As a note this could return more then one entry but only the first will be considered.
 		
-		String sql = "Select * from " + getTableName() + " WHERE " + entry.getName() + "= ?";
+		String sql = "Select * from " + tClass.getSimpleName().toLowerCase() + " WHERE " + entry.getName() + "= ?";
 		
 		//Connect to the DB and attempt the query.
 		
@@ -357,7 +365,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		if(!isColumnNameSafe(pk.getName())) throw new SQLException("Name contains invalid characters");
 
 		//Create a query to delete by
-		String sql = "DELETE FROM " + tClass.getName()+" WHERE "+pk.getName()+" = ?";
+		String sql = "DELETE FROM " + tClass.getSimpleName().toLowerCase()+" WHERE "+pk.getName()+" = ?";
 
 		//Establish a connection and attempt to query
 		try {
@@ -431,6 +439,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	/**
 	 * Gets the name of the table being inserted
 	 * @return the name of the table.
+	 * @deprecated tClass will no longer have a field called tableName and is replaced by getTClassName().
 	 */
 	private String getTableName() {
 		String name = null;
@@ -574,7 +583,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	            if (column.getConstraint() == SQLConstraints.PRIMARY_KEY) {
 	                qualifier.append(columnName).append(" = ?");
 	            } else {
-	                if (column.getColumnType().equalsIgnoreCase("serial")) {
+	                if (column.getColumnType().equals(SQLType.SERIAL)) {
 	                    continue;
 	                }
 	                builder.append(columnName).append(" = ?, ");
@@ -598,6 +607,15 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 */
 	private ColumnField[] getColFields() {
 		// Acquires the list of fields given by the class table.
+		try {
+			System.out.print(tClass.getField("name").getName());
+		} catch (NoSuchFieldException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SecurityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		List<Field> fields = new ArrayList<Field>(Arrays.asList(tClass.getFields()));
 
 		// For each field in the tClass loop through and add them to a columns Array
@@ -634,10 +652,10 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 				if (fieldIsColumn) {
 					// Check to see if the column is an ID and if it is specify it as a primary key.
 					if (isPrimaryKey)
-						tClassColumn = new ColumnField(f.getName().toString(), f.getType().toString(),
+						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().toString()),
 								SQLConstraints.PRIMARY_KEY);
 					else
-						tClassColumn = new ColumnField(f.getName().toString(), f.getType().toString(),
+						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().toString()),
 								SQLConstraints.NONE);
 				}
 				// Add the newly created Column to ColumnField
@@ -702,7 +720,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
     }
     
 	private String getInsertString() {
-    	StringBuilder ib = new StringBuilder("INSERT INTO " + tClass.getName() + "(");
+    	StringBuilder ib = new StringBuilder("INSERT INTO " + tClass.getSimpleName() + "(");
     	StringBuilder vb = new StringBuilder("VALUES (");
     	
     	ColumnField[] columns = getColFields();
@@ -723,4 +741,11 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
     	
     	return ib.toString();
     }
+	
+	private SQLType determineSQLType(String type) {
+		if(type.getClass().equals(Integer.class)) return SQLType.INTEGER;
+		if(type.getClass().equals(String.class)) return SQLType.VARCHAR;
+		if(type.getClass().equals(Boolean.class)) return SQLType.BOOLEAN;
+		else return null;
+	}
 }

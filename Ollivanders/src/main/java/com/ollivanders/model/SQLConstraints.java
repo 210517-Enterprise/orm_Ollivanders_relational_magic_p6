@@ -27,7 +27,7 @@ public enum SQLConstraints {
             case INDEX:
                 return "INDEX";
             case NONE:
-            	return null;
+            	return "";
         }
         return null;
     }

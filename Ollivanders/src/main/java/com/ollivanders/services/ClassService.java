@@ -37,6 +37,10 @@ public class ClassService<T> {
 		repo.createClassTable();
 	}
 	
+	public void dropClassTable() {
+		repo.dropClassTable(true);
+	}
+	
 	/**
 	 * Drops the current class table and creates a new one.
 	 * This method assumes the user wants to cascade on delete.

@@ -1,0 +1,60 @@
+2021-06-24 10:54:54 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 10:58:35 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:06:25 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:06:25 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:09:11 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:09:11 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:15:08 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:15:08 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:19:01 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:19:21 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:21:16 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:21:16 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:21:56 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:21:57 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:22:35 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:22:36 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:23:12 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:23:12 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:23:55 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 11:23:56 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
