@@ -3,11 +3,12 @@ package com.ollivanders.util;
 import java.util.Objects;
 
 import com.ollivanders.model.SQLConstraints;
+import com.ollivanders.repos.SQLType;
 
 public class ColumnField {
 	 //
     private String columnName;
-    private String columnType;
+    private SQLType columnType;
     private SQLConstraints constraint;
 
     /**
@@ -17,7 +18,7 @@ public class ColumnField {
      * @param constraint The constraint of the column. One column should be made a primary key, and currently only one
      *                   constraint can be given per column
      */
-    public ColumnField(String columnName, String columnType, SQLConstraints constraint) {
+    public ColumnField(String columnName, SQLType columnType, SQLConstraints constraint) {
         this.columnName = columnName;
         this.columnType = columnType;
         this.constraint = constraint;
@@ -28,7 +29,11 @@ public class ColumnField {
      * @return a string version of the column
      */
     public String getRowAsString() {
-        String line = columnName+" "+columnType;
+        String line = columnName+" "+SQLType.stringRepresentation(columnType);
+        
+        if(columnType.equals(SQLType.VARCHAR)) {
+        	line = line + "(100)"; //FIXME this might need some tweaking
+        }
         if (constraint != null) {
             line = line+" "+ SQLConstraints.stringReprestation(constraint)+",";
         } else {
@@ -54,11 +59,11 @@ public class ColumnField {
      * Getter method for the column type
      * @return returns the column type
      */
-    public String getColumnType() {
+    public SQLType getColumnType() {
         return columnType;
     }
 
-    public ColumnField setColumnType(String columnType) {
+    public ColumnField setColumnType(SQLType columnType) {
         this.columnType = columnType;
         return this;
     }

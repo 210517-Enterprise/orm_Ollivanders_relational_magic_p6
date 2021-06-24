@@ -13,11 +13,14 @@ import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ollivanders.annotations.Id;
 import com.ollivanders.model.SQLConstraints;
 import com.ollivanders.util.ColumnField;
 import com.ollivanders.util.ConnectionUtil;
@@ -50,8 +53,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		ColumnField[] columns = getColFields();
 		
 		//Create the query that will be used to create a table.
-		StringBuilder queryStr = new StringBuilder("CREATE TABLE " + tClass.getName() + "(\n");
-		
+		StringBuilder queryStr = new StringBuilder("CREATE TABLE "+ tClass.getSimpleName().toLowerCase() + "(");
 		//Assert that the columns are not null and then continue.
 		assert columns != null;
 		for(ColumnField c : columns) {
@@ -66,6 +68,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		try {
 			Connection conn = ConnectionUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(queryStr.toString().toLowerCase());
+			System.out.println("Current query string: " + queryStr.toString().toLowerCase());
 			pstmt.execute();
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -89,7 +92,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		try {
 			assert conn != null;
 			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ?");
-			pstmt.setString(1,getTableName());
+			pstmt.setString(1,tClass.getSimpleName().toLowerCase());
 			conn.close();
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
@@ -111,10 +114,10 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 */
 	@Override
 	public void dropClassTable(boolean cascade) {
-		Connection conn = ConnectionUtil.getConnection();
+		
 		
 		//Intial string of a SQL drop
-		String stmt = "DROP TABLE IF EXISTS " + getTableName();
+		String stmt = "DROP TABLE IF EXISTS " + tClass.getSimpleName();
 		
 		//Creating a string builder with the statement
 		StringBuilder sql = new StringBuilder(stmt);
@@ -122,14 +125,15 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		//Check to see if the table is allowed to cascade and if it is append cascade.
 		if(cascade) sql.append(" CASCADE");
 		
+		sql.append(";");
+		
 		try {
-			assert conn != null;
-			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+			Connection conn = ConnectionUtil.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql.toString().toLowerCase());
+			System.out.println("Executing query: " + sql.toString().toLowerCase());
 			pstmt.execute();
-			conn.close();
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
-			System.exit(1);
 		}
 	}
 	
@@ -141,7 +145,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		Connection conn = ConnectionUtil.getConnection();
 		
 		//Intial string of a SQL drop
-		String stmt = "DROP TABLE IF EXISTS " + getTableName();
+		String stmt = "DROP TABLE IF EXISTS " + tClass.getSimpleName().toLowerCase();
 		
 		try {
 			assert conn != null;
@@ -167,25 +171,35 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 			ColumnField[] columns = getColFields();
 			Connection conn = ConnectionUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			
+
 			int count = 1;
 			
 			for(ColumnField c : columns) {
+				if(c.getConstraint().equals(SQLConstraints.PRIMARY_KEY))
+					continue;
 				String fieldName = c.getColumnName();
 				Field fieldToStore = newObj.getClass().getDeclaredField(fieldName);
+				System.out.println("Current field: " + fieldToStore.getName());
+				Annotation[] fieldAnnotations = fieldToStore.getAnnotations();
+				for(Annotation a : fieldAnnotations) {
+					System.out.println(a.toString());
+				}
+				Set<Class> annoSet = new HashSet<>();
+				for(Annotation a : fieldAnnotations)
+					annoSet.add(a.getClass());
 				
 				//IF the field happens to be private set the accessibility to true
 				if(Modifier.isPrivate(fieldToStore.getModifiers()))
 					fieldToStore.setAccessible(true);
 				
-				if(c.getColumnType().equalsIgnoreCase("serial"))
+				if(annoSet.contains(Id.class)) {
 					continue;
-				
-				else
+				}
+				else {
 					pstmt.setObject(count, fieldToStore.get(newObj));
+					count++;
+				}
 				
-				//Update the count
-				count++;
 			}
 			
 			pstmt.execute();
@@ -217,7 +231,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		if(!isColumnNameSafe(pk.getName())) throw new SQLException("Name contains invalid characters.");
 		
 		//Create a SQL string to query the table by.
-		String sql = "Select * FROM " + tClass.getName().toLowerCase() + " WHERE " + pk.getName() +"= ?";
+		String sql = "Select * FROM " + tClass.getSimpleName().toLowerCase() + " WHERE " + pk.getName() +"= ?";
 		
 		//Establish a connection and query the database.
 		try {
@@ -254,7 +268,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		//Create a query to locate the entry by its columnname
 		//As a note this could return more then one entry but only the first will be considered.
 		
-		String sql = "Select * from " + getTableName() + " WHERE " + entry.getName() + "= ?";
+		String sql = "Select * from " + tClass.getSimpleName().toLowerCase() + " WHERE " + entry.getName() + "= ?";
 		
 		//Connect to the DB and attempt the query.
 		
@@ -357,7 +371,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		if(!isColumnNameSafe(pk.getName())) throw new SQLException("Name contains invalid characters");
 
 		//Create a query to delete by
-		String sql = "DELETE FROM " + tClass.getName()+" WHERE "+pk.getName()+" = ?";
+		String sql = "DELETE FROM " + tClass.getSimpleName().toLowerCase()+" WHERE "+pk.getName()+" = ?";
 
 		//Establish a connection and attempt to query
 		try {
@@ -431,6 +445,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	/**
 	 * Gets the name of the table being inserted
 	 * @return the name of the table.
+	 * @deprecated tClass will no longer have a field called tableName and is replaced by getTClassName().
 	 */
 	private String getTableName() {
 		String name = null;
@@ -476,7 +491,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 				return tClass.getDeclaredField(c.getColumnName());
 		}
 		
-		throw new NoSuchFieldException("This class does not have a primary key constraint");
+		throw new NoSuchFieldException("Class does not have a column with a primary key constraint");
 	}
 	
 	private ArrayList<T> getTObjects(ResultSet rs) throws SQLException{
@@ -574,7 +589,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	            if (column.getConstraint() == SQLConstraints.PRIMARY_KEY) {
 	                qualifier.append(columnName).append(" = ?");
 	            } else {
-	                if (column.getColumnType().equalsIgnoreCase("serial")) {
+	                if (column.getColumnType().equals(SQLType.SERIAL)) {
 	                    continue;
 	                }
 	                builder.append(columnName).append(" = ?, ");
@@ -598,6 +613,15 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 */
 	private ColumnField[] getColFields() {
 		// Acquires the list of fields given by the class table.
+		try {
+			System.out.print(tClass.getField("name").getName());
+		} catch (NoSuchFieldException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SecurityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		List<Field> fields = new ArrayList<Field>(Arrays.asList(tClass.getFields()));
 
 		// For each field in the tClass loop through and add them to a columns Array
@@ -634,10 +658,10 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 				if (fieldIsColumn) {
 					// Check to see if the column is an ID and if it is specify it as a primary key.
 					if (isPrimaryKey)
-						tClassColumn = new ColumnField(f.getName().toString(), f.getType().toString(),
+						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().toString()),
 								SQLConstraints.PRIMARY_KEY);
 					else
-						tClassColumn = new ColumnField(f.getName().toString(), f.getType().toString(),
+						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().toString()),
 								SQLConstraints.NONE);
 				}
 				// Add the newly created Column to ColumnField
@@ -702,25 +726,34 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
     }
     
 	private String getInsertString() {
-    	StringBuilder ib = new StringBuilder("INSERT INTO " + tClass.getName() + "(");
+    	StringBuilder ib = new StringBuilder("INSERT INTO " + tClass.getSimpleName() + "(");
     	StringBuilder vb = new StringBuilder("VALUES (");
     	
     	ColumnField[] columns = getColFields();
     	
     	for(ColumnField c : columns) {
-    		if(c.getColumnType().equals("serial")) continue;
+    		if(c.getConstraint().equals(SQLConstraints.PRIMARY_KEY)) continue;
     		ib.append(c.getColumnName()).append(", ");
     		vb.append("?, ");
     	}
     	
     	int index = vb.lastIndexOf(", ");
     	vb.delete(index, index+2);
+    	vb.append(") ");
     	
     	index = ib.lastIndexOf(", ");
     	ib.delete(index, index+2);
+    	ib.append(") ");
     	
     	ib.append(vb);
-    	
+    	System.out.print(ib.toString());
     	return ib.toString();
     }
+	
+	private SQLType determineSQLType(String type) {
+		if(type.getClass().equals(Integer.class)) return SQLType.INTEGER;
+		if(type.getClass().equals(String.class)) return SQLType.VARCHAR;
+		if(type.getClass().equals(Boolean.class)) return SQLType.BOOLEAN;
+		else return null;
+	}
 }
