@@ -3,7 +3,7 @@ package com.ollivanders.model;
  * Enum that restricts the SQLConstraints people can use. Foreign Key and Default don't have functionality atm
  */
 public enum SQLConstraints {
-    PRIMARY_KEY, FOREIGN_KEY, NOT_NULL, UNIQUE, CHECK, DEFAULT, INDEX;
+    PRIMARY_KEY, FOREIGN_KEY, NOT_NULL, UNIQUE, CHECK, DEFAULT, INDEX, NONE;
 
     /**
      * A convenience method that converts an enum to its SQL string
@@ -26,6 +26,8 @@ public enum SQLConstraints {
                 return "DEFAULT";
             case INDEX:
                 return "INDEX";
+            case NONE:
+            	return null;
         }
         return null;
     }
