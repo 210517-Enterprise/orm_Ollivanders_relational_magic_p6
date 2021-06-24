@@ -59,7 +59,7 @@ public class ClassService<T> {
 		Object pk = getPrimaryKey(save);
 		
 		try {
-			if(repo.findByPrimaryKey(pk) == null)
+			if(repo.findByPrimaryKey(pk) == null || pk == null)
 				repo.saveNewToClassTable(save);
 			else
 				repo.updateByPrimaryKey(save);
@@ -121,9 +121,8 @@ public class ClassService<T> {
         try {
             pk = repo.getPKField();
         } catch (NoSuchFieldException e) {
-            System.out.println("Class is missing a column labeled as a primary key");
             e.printStackTrace();
-            System.exit(1);
+            return null;
         }
 
         if (Modifier.isPrivate(pk.getModifiers())) {

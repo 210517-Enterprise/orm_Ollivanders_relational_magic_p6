@@ -1,6 +1,7 @@
 package com.ollivanders.services;
 
 import com.ollivanders.annotations.Column;
+import com.ollivanders.annotations.Id;
 
 /**
  * A simple person class that will act as a table.
@@ -9,10 +10,13 @@ import com.ollivanders.annotations.Column;
  */
 public class Person {
 	
+	@Id(columnName="id")
+	@Column(columnName="id")
+	public Integer id;
 	@Column(columnName = "name")
 	public String name;
 	@Column(columnName = "age")
-	public int age;
+	public Integer age;
 	
 	public Person(String name, int age) {
 		super();

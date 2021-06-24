@@ -13,8 +13,6 @@ public class TestDriver {
 
 	public static void main(String[] args) {
 		Person p = new Person("Bob",20);
-		Person pTable = new Person();
-		Class pClass = pTable.getClass();
 		ClassService<Person> cs = new ClassService<>(Person.class);
 		
 		cs.dropClassTable();   //This should remove the class table

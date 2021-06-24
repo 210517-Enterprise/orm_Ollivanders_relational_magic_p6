@@ -13,11 +13,14 @@ import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ollivanders.annotations.Id;
 import com.ollivanders.model.SQLConstraints;
 import com.ollivanders.util.ColumnField;
 import com.ollivanders.util.ConnectionUtil;
@@ -168,25 +171,35 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 			ColumnField[] columns = getColFields();
 			Connection conn = ConnectionUtil.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			
+
 			int count = 1;
 			
 			for(ColumnField c : columns) {
+				if(c.getConstraint().equals(SQLConstraints.PRIMARY_KEY))
+					continue;
 				String fieldName = c.getColumnName();
 				Field fieldToStore = newObj.getClass().getDeclaredField(fieldName);
+				System.out.println("Current field: " + fieldToStore.getName());
+				Annotation[] fieldAnnotations = fieldToStore.getAnnotations();
+				for(Annotation a : fieldAnnotations) {
+					System.out.println(a.toString());
+				}
+				Set<Class> annoSet = new HashSet<>();
+				for(Annotation a : fieldAnnotations)
+					annoSet.add(a.getClass());
 				
 				//IF the field happens to be private set the accessibility to true
 				if(Modifier.isPrivate(fieldToStore.getModifiers()))
 					fieldToStore.setAccessible(true);
 				
-				if(c.getColumnType().equals(SQLType.SERIAL))
+				if(annoSet.contains(Id.class)) {
 					continue;
-				
-				else
+				}
+				else {
 					pstmt.setObject(count, fieldToStore.get(newObj));
+					count++;
+				}
 				
-				//Update the count
-				count++;
 			}
 			
 			pstmt.execute();
@@ -478,7 +491,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 				return tClass.getDeclaredField(c.getColumnName());
 		}
 		
-		throw new NoSuchFieldException("This class does not have a primary key constraint");
+		throw new NoSuchFieldException("Class does not have a column with a primary key constraint");
 	}
 	
 	private ArrayList<T> getTObjects(ResultSet rs) throws SQLException{
@@ -719,19 +732,21 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
     	ColumnField[] columns = getColFields();
     	
     	for(ColumnField c : columns) {
-    		if(c.getColumnType().equals("serial")) continue;
+    		if(c.getConstraint().equals(SQLConstraints.PRIMARY_KEY)) continue;
     		ib.append(c.getColumnName()).append(", ");
     		vb.append("?, ");
     	}
     	
     	int index = vb.lastIndexOf(", ");
     	vb.delete(index, index+2);
+    	vb.append(") ");
     	
     	index = ib.lastIndexOf(", ");
     	ib.delete(index, index+2);
+    	ib.append(") ");
     	
     	ib.append(vb);
-    	
+    	System.out.print(ib.toString());
     	return ib.toString();
     }
 	
