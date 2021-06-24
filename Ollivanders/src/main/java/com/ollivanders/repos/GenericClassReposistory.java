@@ -57,7 +57,13 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		//Assert that the columns are not null and then continue.
 		assert columns != null;
 		for(ColumnField c : columns) {
-			String line = c.getRowAsString();
+			String line;
+			if(c.getConstraint().equals(SQLConstraints.PRIMARY_KEY)) {
+				line = c.getColumnName() + " serial, ";
+			} else {
+				line = c.getRowAsString();
+			}
+			
 			queryStr.append(line);
 		}
 		
@@ -239,6 +245,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setObject(1, primaryKey);
 			ResultSet rs = pstmt.executeQuery();
+			System.out.print("Successfully located the field");
 			objs = getTObjects(rs);
 			
 		} catch (SQLException e) {
@@ -350,6 +357,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 			
 			//Modify the updated sql statement then execute.
 			pstmt = getPreparedUpdate(pstmt, updatedObj);
+			System.out.println(pstmt.toString());
 			pstmt.executeQuery();
 			
 			ResultSet rs = pstmt.getResultSet();
@@ -576,7 +584,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * @throws SQLSyntaxErrorException if the column field in the class has invalid characters.
 	 */
 	private String getUpdateString() throws SQLSyntaxErrorException {
-		 StringBuilder builder = new StringBuilder("Update "+tClass.getName()+" SET ");
+		 StringBuilder builder = new StringBuilder("Update "+tClass.getSimpleName()+" SET ");
 	        StringBuilder qualifier = new StringBuilder("WHERE ");
 
 	        ColumnField[] columns = getColFields();
@@ -613,15 +621,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 */
 	private ColumnField[] getColFields() {
 		// Acquires the list of fields given by the class table.
-		try {
-			System.out.print(tClass.getField("name").getName());
-		} catch (NoSuchFieldException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (SecurityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		List<Field> fields = new ArrayList<Field>(Arrays.asList(tClass.getFields()));
 
 		// For each field in the tClass loop through and add them to a columns Array
@@ -658,10 +657,10 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 				if (fieldIsColumn) {
 					// Check to see if the column is an ID and if it is specify it as a primary key.
 					if (isPrimaryKey)
-						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().toString()),
+						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().getSimpleName()),
 								SQLConstraints.PRIMARY_KEY);
 					else
-						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().toString()),
+						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().getSimpleName()),
 								SQLConstraints.NONE);
 				}
 				// Add the newly created Column to ColumnField
@@ -751,9 +750,9 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
     }
 	
 	private SQLType determineSQLType(String type) {
-		if(type.getClass().equals(Integer.class)) return SQLType.INTEGER;
-		if(type.getClass().equals(String.class)) return SQLType.VARCHAR;
-		if(type.getClass().equals(Boolean.class)) return SQLType.BOOLEAN;
+		if(type.equals("Integer")) return SQLType.INTEGER;
+		if(type.equals("String")) return SQLType.VARCHAR;
+		if(type.equals("Boolean")) return SQLType.BOOLEAN;
 		else return null;
 	}
 }
