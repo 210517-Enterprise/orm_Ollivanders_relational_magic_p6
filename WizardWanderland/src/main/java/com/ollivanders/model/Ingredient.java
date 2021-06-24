@@ -1,46 +1,32 @@
 package com.ollivanders.model;
 
+import com.ollivanders.annotations.Column;
+import com.ollivanders.annotations.Entity;
+import com.ollivanders.annotations.Id;
+
+@Entity(tableName="ingredient")
 public class Ingredient {
 	
-	public int id;
-	public String type;
-	public String name;
-	public double cost;
+	@Id(columnName="name_id", isSerial = false, isUnique = true)
+	private String name;
+	
+	@Column(columnName="type")
+	private String type;
+	
+	@Column(columnName="cost")
+	private double cost;
 	
 	public Ingredient() {
 		super();
 	}
-	public Ingredient(int id, String type, String name, double cost) {
+
+	public Ingredient(String type, String name, double cost) {
 		super();
-		this.id = id;
-		this.type = type;
 		this.name = name;
+		this.type = type;
 		this.cost = cost;
 	}
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public double getCost() {
-		return cost;
-	}
-	public void setCost(double cost) {
-		this.cost = cost;
-	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -48,11 +34,11 @@ public class Ingredient {
 		long temp;
 		temp = Double.doubleToLongBits(cost);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + id;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -63,8 +49,6 @@ public class Ingredient {
 			return false;
 		Ingredient other = (Ingredient) obj;
 		if (Double.doubleToLongBits(cost) != Double.doubleToLongBits(other.cost))
-			return false;
-		if (id != other.id)
 			return false;
 		if (name == null) {
 			if (other.name != null)
@@ -78,10 +62,36 @@ public class Ingredient {
 			return false;
 		return true;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public double getCost() {
+		return cost;
+	}
+
+	public void setCost(double cost) {
+		this.cost = cost;
+	}
+
 	@Override
 	public String toString() {
-		return "Ingredient [id=" + id + ", type=" + type + ", name=" + name + ", cost=" + cost + "]";
+		return "Ingredient [name=" + name + ", type=" + type + ", cost=" + cost + "]";
 	}
+	
 	
 	
 	
