@@ -110,6 +110,42 @@ public class ClassService<T> {
     public ArrayList<T> find(Map<String, Object> fields){
     	return repo.searchByFields(fields);
     }
+    
+    public T findByPrimaryKey(Object pk) {
+    	try {
+			return repo.findByPrimaryKey(pk);
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    }
+    
+    public T findByColumnName(Object colName){
+    	try {
+			return repo.findByColumnName(colName);
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    }
+    
+    public ArrayList<T> findAllByColumnName(Object colName){
+    	try {
+			return (ArrayList<T>) repo.findAllByColumnName(colName);
+		} catch (NoSuchFieldException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    }
 	
 	/**
      * A helper method to get the primary key from an object

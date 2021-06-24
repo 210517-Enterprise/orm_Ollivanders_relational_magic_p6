@@ -10,7 +10,7 @@ import com.ollivanders.annotations.Id;
  */
 public class Person {
 	
-	@Id(columnName="id")
+	@Id(columnName="id", isSerial=true,isUnique=true)
 	@Column(columnName="id")
 	public Integer id;
 	@Column(columnName = "name")
@@ -34,6 +34,10 @@ public class Person {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public int getAge() {

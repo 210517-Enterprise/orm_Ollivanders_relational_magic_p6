@@ -218,6 +218,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * Finds an object by its primary key value.
 	 * @param primaryKey is the primary key that will be queried by.
 	 * @return T an object found by the primary key or null if none exists.
+	 * @deprecated replaced by 
 	 */
 	@Override
 	public T findByPrimaryKey(Object primaryKey) throws NoSuchFieldException, SQLException {
@@ -245,7 +246,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setObject(1, primaryKey);
 			ResultSet rs = pstmt.executeQuery();
-			System.out.print("Successfully located the field");
+			System.out.println("Successfully located the field");
 			objs = getTObjects(rs);
 			
 		} catch (SQLException e) {
@@ -294,7 +295,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 
 
 	@Override
-	public List<T> findAllByColumnName(Object columnName) throws NoSuchFieldException, SQLException {
+	public ArrayList<T> findAllByColumnName(Object columnName) throws NoSuchFieldException, SQLException {
 		Field entry = null;
 		ArrayList<T> objects = null;
 		//See if the field exists and if not do not return anything
@@ -311,7 +312,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		//Create a query to locate the entry by its columnname
 		//As a note this could return more then one entry but only the first will be considered.
 		
-		String sql = "Select * from " + getTableName() + " WHERE " + entry.getName() + "= ?";
+		String sql = "Select * from " + tClass.getSimpleName() + " WHERE " + entry.getName() + "= ?";
 		
 		//Connect to the DB and attempt the query.
 		
@@ -357,11 +358,8 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 			
 			//Modify the updated sql statement then execute.
 			pstmt = getPreparedUpdate(pstmt, updatedObj);
-			System.out.println(pstmt.toString());
-			pstmt.executeQuery();
 			
-			ResultSet rs = pstmt.getResultSet();
-			return rs.rowInserted();
+			return pstmt.execute();
 		} catch(SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -401,7 +399,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	}
 	
 	public ArrayList<T> searchByFields(Map<String, Object> qualifiers) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM "+tClass.getName()+" WHERE ");
+        StringBuilder sql = new StringBuilder("SELECT * FROM "+tClass.getSimpleName()+" WHERE ");
 
         
 
@@ -421,7 +419,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
                 stmt.setObject(counter, entry.getValue());
                 counter++;
             }
-
+            System.out.println("Query being executed: " + stmt.toString());
             ResultSet rs = stmt.executeQuery();
             ArrayList<T> found = getTObjects(rs);
 
