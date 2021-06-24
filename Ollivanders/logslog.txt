@@ -436,3 +436,9 @@ otEmpty{event= } - DB connection established.
 2021-06-24 15:08:24 INFO  ollivanders.util.ConnectionUtil:39 - 
 otEmpty{userId= } - 
 otEmpty{event= } - DB connection established.
+2021-06-24 15:50:03 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.
+2021-06-24 15:52:39 INFO  ollivanders.util.ConnectionUtil:39 - 
+otEmpty{userId= } - 
+otEmpty{event= } - DB connection established.

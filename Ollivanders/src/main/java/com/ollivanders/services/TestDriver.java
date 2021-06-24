@@ -40,6 +40,10 @@ public class TestDriver {
 		Person dude = cs.findByPrimaryKey(1);
 		System.out.println(dude.getName());
 		
-		Person bruh = cs.findByColumnName("name");
+		ArrayList<Person> peoples2 = cs.getAll();
+		for(Person blep : peoples2) {
+			System.out.println("Blep " + blep.getName());
+		}
+
 	}
 }
