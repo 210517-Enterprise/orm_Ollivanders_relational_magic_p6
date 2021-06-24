@@ -2,18 +2,37 @@ package com.ollivanders.model;
 
 import java.sql.Date;
 
+import com.ollivanders.annotations.Column;
+import com.ollivanders.annotations.Entity;
+import com.ollivanders.annotations.Id;
+
+@Entity(tableName="wizard")
 public class Wizard {
 	
-	public int id;
-	public String firstName;
-	public String lastName;
-	public Date birthdate;
+	@Id(columnName="id", isSerial = true, isUnique = true)
+	private int id;
+	
+	@Column(columnName="first_name")
+	private String firstName;
+	
+	@Column(columnName="last_name")
+	private String lastName;
+	
+	@Column(columnName="birthdate")
+	private Date birthdate;
+	
 	public Wizard() {
 		super();
 	}
 	public Wizard(int id, String firstName, String lastName, Date birthdate) {
 		super();
 		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.birthdate = birthdate;
+	}
+	public Wizard(String firstName, String lastName, Date birthdate) {
+		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.birthdate = birthdate;

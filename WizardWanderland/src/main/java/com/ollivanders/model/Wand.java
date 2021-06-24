@@ -1,18 +1,44 @@
 package com.ollivanders.model;
 
+import com.ollivanders.annotations.Column;
+import com.ollivanders.annotations.Entity;
+import com.ollivanders.annotations.Id;
+import com.ollivanders.annotations.JoinColumn;
+
+@Entity(tableName="wand")
 public class Wand {
 	
-	public int id;
-	public String wood;
-	public String core;
-	public double cost;
-	public int wizard_id;
+	@Id(columnName="wand_id", isSerial = true, isUnique = true)
+	private int id;
+	
+	@JoinColumn(columnName = "wood", foreignTableName = "ingredient", foreignColumnName = "id")
+	private String wood;
+	
+	@JoinColumn(columnName = "core", foreignTableName = "ingredient", foreignColumnName = "id")
+	private String core;
+	
+	@Column(columnName="length")
+	private double length;
+	
+	@Column(columnName="cost")
+	private double cost;
+	
+	@JoinColumn(columnName = "wizard_id", foreignTableName = "wizard", foreignColumnName = "id")
+	private int wizard_id;
+	
 	public Wand() {
 		super();
 	}
 	public Wand(int id, String wood, String core, double cost, int wizard_id) {
 		super();
 		this.id = id;
+		this.wood = wood;
+		this.core = core;
+		this.cost = cost;
+		this.wizard_id = wizard_id;
+	}
+	public Wand(String wood, String core, double cost, int wizard_id) {
+		super();
 		this.wood = wood;
 		this.core = core;
 		this.cost = cost;

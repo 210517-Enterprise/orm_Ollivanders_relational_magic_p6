@@ -1,4 +1,4 @@
-package com.ollivanders.initialdatabase;
+package com.ollivanders.dao.initialdatabase;
 
 public class DataDriver {
 

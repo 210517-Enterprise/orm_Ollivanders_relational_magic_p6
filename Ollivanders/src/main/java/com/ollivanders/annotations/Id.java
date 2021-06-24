@@ -9,4 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Id {
 	String columnName();
+	boolean isSerial();
+	boolean isUnique();
 }
