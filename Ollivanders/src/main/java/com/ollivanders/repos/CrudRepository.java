@@ -35,7 +35,7 @@ public interface CrudRepository<T> {
 	 * Saves a specified object.
 	 * @param newObj
 	 */
-	void saveNewToClassTable(T newObj);
+	T saveNewToClassTable(T newObj);
 	
 	
 	/**

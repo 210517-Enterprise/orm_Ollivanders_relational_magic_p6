@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -64,20 +65,13 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	public void createClassTable() {
 		
 		//Make a call to the helper method to acquire the column fields from tClass
-		ColumnField[] columns = getColFields();
+		ColumnField[] columns = getColumnFields();
 		
 		//Create the query that will be used to create a table.
 		StringBuilder queryStr = new StringBuilder("CREATE TABLE "+ tClass.getSimpleName().toLowerCase() + "(");
-		//Assert that the columns are not null and then continue.
-		assert columns != null;
+
 		for(ColumnField c : columns) {
-			String line;
-			if(c.getConstraint().equals(SQLConstraints.PRIMARY_KEY)) {
-				line = c.getColumnName() + " serial, ";
-			} else {
-				line = c.getRowAsString();
-			}
-			
+			String line = c.getRowAsString();
 			queryStr.append(line);
 		}
 		
@@ -92,7 +86,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 			pstmt.execute();
 		} catch(SQLException e) {
 			e.printStackTrace();
-			System.exit(1);
 		}
 	}
 	
@@ -178,15 +171,16 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * Inserts a new object to the tClass table. The method will first get
 	 * the fields of the class and format it as a string 
 	 * @param newObj is the object that is going to be inserted into the DB.
+	 * @return 
 	 */
 	@Override
-	public void saveNewToClassTable(T newObj) {
+	public T saveNewToClassTable(T newObj) {
 		String sql = getInsertString();
 		
 		try {
-			ColumnField[] columns = getColFields();
+			ColumnField[] columns = getColumnFields();
 			Connection conn = ConnectionUtil.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql);
+			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
 			int count = 1;
 			
@@ -219,8 +213,15 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 			}
 			
 			pstmt.execute();
+			ResultSet rs = pstmt.getGeneratedKeys();
+			if(rs.next())
+				return findByPrimaryKey(rs.getObject(1));
+			else
+				return null;
+		
 		} catch (NoSuchFieldException | IllegalAccessException | SQLException e) {
 			e.printStackTrace();
+			return null;
 		}
 	}
 	
@@ -497,7 +498,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 */
 	public Field getPKField() throws NoSuchFieldException{
 		//Make a call to the helper method to acquire the column fields.
-		ColumnField[] columns = getColFields();
+		ColumnField[] columns = getColumnFields();
 		
 		//For each column field check to see if there is a sql constraint for the primary key.
 		for(ColumnField c : columns) {
@@ -511,7 +512,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	
 	private ArrayList<T> getTObjects(ResultSet rs) throws SQLException{
 		//Acquire the column fields from tClass
-		ColumnField[] columns = getColFields();
+		ColumnField[] columns = getColumnFields();
 		
 		//Iterate through the result set to construct the new object
 		 ArrayList<T> objects = new ArrayList<>();
@@ -594,7 +595,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		 StringBuilder builder = new StringBuilder("Update "+tClass.getSimpleName()+" SET ");
 	        StringBuilder qualifier = new StringBuilder("WHERE ");
 
-	        ColumnField[] columns = getColFields();
+	        ColumnField[] columns = getColumnFields();
 
 	        for (ColumnField column: columns){
 
@@ -625,8 +626,9 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * - The {@code SQL constraint} that the field has.<br>
 	 * It also double checks to ensure the the column field is indeed annotated as {@code @Column}
 	 * @return ColumnField[], returns an array of fields that represent
+	 * @throws SQLException Throws this exception if anny of the annotated fields are invalid.
 	 */
-	private ColumnField[] getColFields() {
+	private ColumnField[] getColumnFields() {
 		
 		// Acquires the list of fields given by the class table.
 		List<Field> fields = new ArrayList<Field>(Arrays.asList(tClass.getFields()));
@@ -637,8 +639,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		
 		for (Field f : fields) {
 			
-			boolean isPrimaryKey = false;
-			boolean fieldIsColumn = false;
 			ColumnField tClassColumn = null;
 			
 			if (Modifier.isPrivate(f.getModifiers()))
@@ -646,12 +646,9 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 
 			/*
 			 * Check the field to ensure that the field has the following annotations filled out.
-			 * columnName 		- the column has a name, this cannot be null
-			 * columnType 		- the column has a type, this cannot be null.
-			 * columnConstraint - the column's constraint, this can be null.
-			 * 
-			 *  Alternatively if the column is annotated as an Id it will be treated as a serial primary key.
-			 *  
+			 * columnName 		- the column has a name.
+			 * columnType 		- the column has a type.
+			 * columnConstraint - the column's constraint.
 			 *  Finally when the entire list 
 			 */
 			try {
@@ -662,33 +659,19 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 					for (Annotation a : annoArr) {
 						// Check to see if the field is a column
 						if (a.annotationType().equals(com.ollivanders.annotations.Column.class)) {
-							fieldIsColumn = true;
 							Column c = f.getAnnotation(Column.class);
+							//Check the column's information before continuing.
+							if(!isColumnNameSafe(c.columnName())) throw new SQLException("Column name contains invalid characters");
+							
 							tClassColumn = new ColumnField(c.columnName(),c.columnType(),c.columnConstraint());
-						}
-						if (a.annotationType().equals(com.ollivanders.annotations.Id.class)) {
-							isPrimaryKey = true;
 						}
 					}
 				}
 
-//				// So long as the field is indeed a field, get the name and type, and
-//				// constraint.
-//				// Note if no constraint is given no SQL constraints will be used.
-//				if (fieldIsColumn) {
-//					// Check to see if the column is an ID and if it is specify it as a primary key.
-//					if (isPrimaryKey)
-//						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().getSimpleName()),
-//								SQLConstraints.PRIMARY_KEY);
-//					else
-//						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().getSimpleName()),
-//								SQLConstraints.NONE);
-//				}
-				// Add the newly created Column to ColumnField
 				columns[index] = tClassColumn;
 				index++;
 				// Catch any exceptions that may occur.
-			} catch (IllegalArgumentException e) {
+			} catch (IllegalArgumentException | SQLException e) {
 				e.printStackTrace();
 				System.exit(1);
 			}
@@ -703,7 +686,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
      * @return returns a {re[aredStatement that is the update statement
      */
     private PreparedStatement getPreparedUpdate(PreparedStatement pstmt, T updatedObject){
-        ColumnField[] columns = getColFields();
+        ColumnField[] columns = getColumnFields();
 
         int count = 1;
 
@@ -749,7 +732,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
     	StringBuilder ib = new StringBuilder("INSERT INTO " + tClass.getSimpleName() + "(");
     	StringBuilder vb = new StringBuilder("VALUES (");
     	
-    	ColumnField[] columns = getColFields();
+    	ColumnField[] columns = getColumnFields();
     	
     	for(ColumnField c : columns) {
     		if(c.getConstraint().equals(SQLConstraints.PRIMARY_KEY)) continue;
@@ -770,6 +753,13 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
     	return ib.toString();
     }
 	
+	/**
+	 * Determines the SQL type of a column based on the string given of its data type.
+	 * @deprecated Column annotation now contains the information for the SQL type.
+	 * @param type The type being checked for
+	 * @return SQLType A ENUM of the type matching the string.
+	 */
+	@SuppressWarnings("unused")
 	private SQLType determineSQLType(String type) {
 		if(type.equals("Integer")) return SQLType.INTEGER;
 		if(type.equals("String")) return SQLType.VARCHAR;
