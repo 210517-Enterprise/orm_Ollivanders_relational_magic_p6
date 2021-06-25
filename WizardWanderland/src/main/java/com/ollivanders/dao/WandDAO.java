@@ -15,6 +15,11 @@ public class WandDAO {
 	private static ClassService<Wand> wandRepo = new ClassService<Wand>(Wand.class);
 	private static final Logger log = LoggerFactory.getLogger(WandDAO.class);
 	
+	/**
+	 * 
+	 * @param wand to be saved
+	 * @return true if wand was saved, false otherwise
+	 */
 	public boolean save(Wand wand) { // adds Wand if it doesn't exist or updated if it does
 		try {
 			wandRepo.save(wand);
@@ -25,6 +30,11 @@ public class WandDAO {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param wand to be deleted from table
+	 * @return true if wand was deleted, false otherwise
+	 */
 	public boolean delete(Wand wand) { // delete Wand if it exists
 		try {
 			wandRepo.delete(wand);
@@ -35,6 +45,11 @@ public class WandDAO {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param wand to check existence of
+	 * @return true if wand exist, false otherwise
+	 */
 	public boolean exists(Wand wand) { // find if Wand exists
 		try {
 			return wandRepo.isInstanceSaved(wand);
@@ -44,6 +59,11 @@ public class WandDAO {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param filterBy Map by Key,Value pair where Key=table_column_name
+	 * @return List of Wands that match the filter
+	 */
 	public List<Wand> find(Map<String, Object> filterBy) { // find wand by fields
 		try {
 			return wandRepo.find(filterBy);
@@ -53,6 +73,10 @@ public class WandDAO {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @return all Wands in the wand table
+	 */
 	public List<Wand> getAll() {
 		try {
 			return wandRepo.getAll();

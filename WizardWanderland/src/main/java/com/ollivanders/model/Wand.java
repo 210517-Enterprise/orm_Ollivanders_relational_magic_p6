@@ -3,7 +3,7 @@ package com.ollivanders.model;
 import com.ollivanders.annotations.Column;
 import com.ollivanders.annotations.Entity;
 import com.ollivanders.annotations.Id;
-import com.ollivanders.annotations.JoinColumn;
+import com.ollivanders.repos.SQLType;
 
 @Entity(tableName="wand")
 public class Wand {
@@ -11,19 +11,19 @@ public class Wand {
 	@Id(columnName="wand_id", isSerial = true, isUnique = true)
 	private int id;
 	
-	@JoinColumn(columnName = "wood", foreignTableName = "ingredient", foreignColumnName = "name_id")
+	@Column(columnName="last_name", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String wood;
 	
-	@JoinColumn(columnName = "core", foreignTableName = "ingredient", foreignColumnName = "name_id")
+	@Column(columnName="core", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String core;
 	
-	@Column(columnName="length")
+	@Column(columnName="length", columnConstraint = SQLConstraints.NONE, columnType = SQLType.DOUBLE)
 	private double length;
 	
-	@Column(columnName="cost")
+	@Column(columnName="cost", columnConstraint = SQLConstraints.NONE, columnType = SQLType.DOUBLE)
 	private double cost;
 	
-	@JoinColumn(columnName = "wizard_id", foreignTableName = "wizard", foreignColumnName = "id")
+	@Column(columnName="wizard_id", columnConstraint = SQLConstraints.FOREIGN_KEY, columnType = SQLType.INTEGER)
 	private int wizard_id;
 	
 	public Wand() {
