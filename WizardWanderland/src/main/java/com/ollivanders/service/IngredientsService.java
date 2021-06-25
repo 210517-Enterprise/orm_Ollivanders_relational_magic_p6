@@ -55,6 +55,45 @@ public class IngredientsService {
 		return ingredients;
 	}
 	
+	/**
+	 * 
+	 * @param ingredient to be saved to database (either new or updated)
+	 * @return true if ingredient was saved, false otherwise
+	 */
+	public boolean save(Ingredient ingredient) {
+		boolean result = false;
+		try {
+			log.info("Attempting to save "+ ingredient.toString());
+			if(!ingDAO.exists(ingredient)) {
+				log.info("Saving ingredient is overwriting old another ingredient...");
+			}
+			else {
+				log.info("Saving ingredient as a new ingredient...");
+			}
+			result = ingDAO.save(ingredient);
+			log.info("Save action was completed in IngredientsService");
+		} catch(Exception e) {
+			log.debug("Unable to save ingredient");
+		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param ingredient to be deleted from database table
+	 * @return true if ingredient was successfully removed, false otherwise
+	 */
+	public boolean delete(Ingredient ingredient) {
+		boolean result = false;
+		try {
+			log.info("Attempting to delete : " + ingredient);
+			result = ingDAO.delete(ingredient);
+			log.info("Delete was successful");
+		} catch (Exception e) {
+			log.debug("Unable to delete Ingredient");
+		}
+		return result;
+	}
 	
 }
 
