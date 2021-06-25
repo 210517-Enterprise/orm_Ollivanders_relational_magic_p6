@@ -2,7 +2,9 @@ package com.ollivanders.test;
 
 import static org.mockito.Mockito.mock;
 
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import com.ollivanders.repos.CrudRepository;
 import com.ollivanders.services.ClassService;
@@ -19,7 +21,18 @@ public class ClassServiceTest {
 	public void setup() {
 		classService = new ClassService<PersonTest>(PersonTest.class);
 		mockRepo = mock(CrudRepository.class);
-	//	classService.createClassTable(Person.class) = mockRepo;
+//		classService.createClassTable(PersonTest.class) = mockRepo;
+		
+	}
+	
+	@After
+	public void teardown() {
+		classService = null;
+		mockRepo = null;
+	}
+	
+	@Test
+	public void testCreateTable() {
 		
 	}
 }
