@@ -117,7 +117,7 @@ public class ClassService<T> {
      * @param search the object to search for
      * @return returns true if the object is found, false otherwise
      */
-    private boolean isInstanceSaved(T search) {
+    public boolean isInstanceSaved(T search) {
     	
     	//Acquires the primary key based on the object instance.
         Object pk = getPrimaryKey(search);
