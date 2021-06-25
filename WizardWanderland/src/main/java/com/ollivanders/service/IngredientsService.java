@@ -16,15 +16,27 @@ public class IngredientsService {
 	private static final Logger log = LoggerFactory.getLogger(IngredientsService.class);
 	private static IngredientDAO ingDAO = new IngredientDAO();
 	
+	/**
+	 * 
+	 * @return all ingredients from ingredients table
+	 */
 	public List<Ingredient> getAll() {
-		
-
-		// TODO return all using DAO layer
-		
-		return new ArrayList<Ingredient>();
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		try {
+			ingredients = ingDAO.getAll();
+			log.info("Grabbed all ingredients");
+		} catch (Exception e) {
+			log.debug("Unable to grab all ingredients");
+		}
+		return ingredients;
 		
 	}
 	
+	/**
+	 * 
+	 * @param type of ingredient (wood/core)
+	 * @return List of Ingredients of specified type
+	 */
 	public List<Ingredient> getByType(String type){
 		
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
