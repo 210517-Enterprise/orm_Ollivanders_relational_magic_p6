@@ -20,31 +20,45 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ollivanders.annotations.Column;
 import com.ollivanders.annotations.Id;
 import com.ollivanders.model.SQLConstraints;
 import com.ollivanders.util.ColumnField;
 import com.ollivanders.util.ConnectionUtil;
 
-/*
- * A repository that can run CRUD methods for any class that extends the BaseModel.
- * @param <T> The class that is using the Reposistory.
+/**
+ * A repository that can run CRUD operations for any instance of a class.
+ * @author Kyle Castillo
  */
 public class GenericClassReposistory<T> implements CrudRepository<T>{
 	
 	private Class<T> tClass;
+	private boolean allowNoPrimaryKey;
 	
 	/**
-	 * Construct that takes in a class and stores it as a reference
-	 * @param tClass the class that this repository is for.
+	 * Constructor that takes in any instance of a class.
+	 * @param tClass the class instance that will be used within the repo.
 	 */
 	public GenericClassReposistory(Class<T> tClass) {
 		super();
 		this.tClass = tClass;
+		allowNoPrimaryKey = true;
+	}
+	
+	/**
+	 * Constructor that accepts an instance of a class and allowing no primary key.
+	 * @param tClass the class instance that will be used within the repo.
+	 * @param allowNoPrimaryKey specifies whether or not to allow for no primary key.
+	 */
+	public GenericClassReposistory(Class<T> tClass, boolean allowNoPrimaryKey) {
+		super();
+		this.tClass = tClass;
+		this.allowNoPrimaryKey = allowNoPrimaryKey; 
 	}
 
 	
 	/**
-	 * Creates a class table based on the tClass field. The createClassTable method
+	 * Creates a class table for the tClass instance. 
 	 */
 	@Override
 	public void createClassTable() {
@@ -108,12 +122,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 		}
 		
 		return objects;
-	}
-
-	@Override
-	public List<T> getAllJoined(T otherTableObj) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
@@ -220,7 +228,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * Finds an object by its primary key value.
 	 * @param primaryKey is the primary key that will be queried by.
 	 * @return T an object found by the primary key or null if none exists.
-	 * @deprecated replaced by 
 	 */
 	@Override
 	public T findByPrimaryKey(Object primaryKey) throws NoSuchFieldException, SQLException {
@@ -612,31 +619,41 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	}
 	
 	/**
-	 * Helper method to find the column fields from tClass. Effectively a ColumnField is:
-	 * - The name of the field.
-	 * - The type of the field.
-	 * - The SQL constraint that the field has.
-	 * - It also double checks to ensure the the column field is indeed annotated as a field.
+	 * Helper method to find the column fields from tClass. Effectively a ColumnField is:<br>
+	 * - The {@code name} of the field.<br>
+	 * - The {@code type} of the field.<br>
+	 * - The {@code SQL constraint} that the field has.<br>
+	 * It also double checks to ensure the the column field is indeed annotated as {@code @Column}
 	 * @return ColumnField[], returns an array of fields that represent
 	 */
 	private ColumnField[] getColFields() {
+		
 		// Acquires the list of fields given by the class table.
 		List<Field> fields = new ArrayList<Field>(Arrays.asList(tClass.getFields()));
 
-		// For each field in the tClass loop through and add them to a columns Array
-		// If no id is available one will be created. ColumnField will be preallocated
+		// For each field in the tClass, loop through and add them to an array.
 		ColumnField[] columns = new ColumnField[fields.size()];
 		int index = 0;
+		
 		for (Field f : fields) {
+			
 			boolean isPrimaryKey = false;
 			boolean fieldIsColumn = false;
 			ColumnField tClassColumn = null;
-			// If the modifier happens to be private set it to true.
+			
 			if (Modifier.isPrivate(f.getModifiers()))
 				f.setAccessible(true);
 
-			// Check to ensure the field has all necessary components to be added to the
-			// columns.
+			/*
+			 * Check the field to ensure that the field has the following annotations filled out.
+			 * columnName 		- the column has a name, this cannot be null
+			 * columnType 		- the column has a type, this cannot be null.
+			 * columnConstraint - the column's constraint, this can be null.
+			 * 
+			 *  Alternatively if the column is annotated as an Id it will be treated as a serial primary key.
+			 *  
+			 *  Finally when the entire list 
+			 */
 			try {
 				// Make sure the field has an annotation for the column.
 				if (f.getAnnotations().length != 0) {
@@ -644,25 +661,29 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 					Annotation[] annoArr = f.getAnnotations();
 					for (Annotation a : annoArr) {
 						// Check to see if the field is a column
-						if (a.annotationType().equals(com.ollivanders.annotations.Column.class))
+						if (a.annotationType().equals(com.ollivanders.annotations.Column.class)) {
 							fieldIsColumn = true;
-						if (a.annotationType().equals(com.ollivanders.annotations.Id.class))
+							Column c = f.getAnnotation(Column.class);
+							tClassColumn = new ColumnField(c.columnName(),c.columnType(),c.columnConstraint());
+						}
+						if (a.annotationType().equals(com.ollivanders.annotations.Id.class)) {
 							isPrimaryKey = true;
+						}
 					}
 				}
 
-				// So long as the field is indeed a field, get the name and type, and
-				// constraint.
-				// Note if no constraint is given no SQL constraints will be used.
-				if (fieldIsColumn) {
-					// Check to see if the column is an ID and if it is specify it as a primary key.
-					if (isPrimaryKey)
-						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().getSimpleName()),
-								SQLConstraints.PRIMARY_KEY);
-					else
-						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().getSimpleName()),
-								SQLConstraints.NONE);
-				}
+//				// So long as the field is indeed a field, get the name and type, and
+//				// constraint.
+//				// Note if no constraint is given no SQL constraints will be used.
+//				if (fieldIsColumn) {
+//					// Check to see if the column is an ID and if it is specify it as a primary key.
+//					if (isPrimaryKey)
+//						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().getSimpleName()),
+//								SQLConstraints.PRIMARY_KEY);
+//					else
+//						tClassColumn = new ColumnField(f.getName().toString(), determineSQLType(f.getType().getSimpleName()),
+//								SQLConstraints.NONE);
+//				}
 				// Add the newly created Column to ColumnField
 				columns[index] = tClassColumn;
 				index++;

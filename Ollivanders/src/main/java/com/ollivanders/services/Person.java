@@ -2,6 +2,8 @@ package com.ollivanders.services;
 
 import com.ollivanders.annotations.Column;
 import com.ollivanders.annotations.Id;
+import com.ollivanders.model.SQLConstraints;
+import com.ollivanders.repos.SQLType;
 
 /**
  * A simple person class that will act as a table.
@@ -11,11 +13,11 @@ import com.ollivanders.annotations.Id;
 public class Person {
 	
 	@Id(columnName="id", isSerial=true,isUnique=true)
-	@Column(columnName="id")
+	@Column(columnName="id",columnType = SQLType.SERIAL, columnConstraint = SQLConstraints.PRIMARY_KEY)
 	public Integer id;
-	@Column(columnName = "name")
+	@Column(columnName = "name", columnType = SQLType.VARCHAR, columnConstraint = SQLConstraints.NONE)
 	public String name;
-	@Column(columnName = "age")
+	@Column(columnName = "age", columnType = SQLType.INTEGER, columnConstraint = SQLConstraints.NONE)
 	public Integer age;
 	
 	public Person(String name, int age) {
