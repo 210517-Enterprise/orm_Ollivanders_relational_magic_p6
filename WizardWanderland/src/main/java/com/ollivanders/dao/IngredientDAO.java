@@ -15,6 +15,11 @@ public class IngredientDAO {
 	private static ClassService<Ingredient> ingRepo = new ClassService<Ingredient>(Ingredient.class);
 	private static final Logger log = LoggerFactory.getLogger(IngredientDAO.class);
 	
+	/**
+	 * 
+	 * @param ingredient to be saved
+	 * @return true if ingredient was saved, false otherwise
+	 */
 	public boolean save(Ingredient ingredient) { // adds ingredient if it doesn't exist or updated if it does
 		try {
 			ingRepo.save(ingredient);
@@ -25,6 +30,11 @@ public class IngredientDAO {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param ingredient to be deleted from table
+	 * @return true if ingredient was deleted, false otherwise
+	 */
 	public boolean delete(Ingredient ingredient) { // delete ingredient if it exists
 		try {
 			ingRepo.delete(ingredient);
@@ -35,6 +45,11 @@ public class IngredientDAO {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param ingredient to check existence of
+	 * @return true if ingredient exist, false otherwise
+	 */
 	public boolean exists(Ingredient ingredient) { // find if ingredient exists
 		try {
 			return ingRepo.isInstanceSaved(ingredient);
@@ -44,6 +59,11 @@ public class IngredientDAO {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param filterBy Map by Key,Value pair where Key=table_column_name
+	 * @return List of Ingredients that match the filter
+	 */
 	public List<Ingredient> find(Map<String, Object> filterBy) { // find ingredient by field
 		try {
 			return ingRepo.find(filterBy);
@@ -53,6 +73,10 @@ public class IngredientDAO {
 		return new ArrayList<Ingredient>();
 	}
 	
+	/**
+	 * 
+	 * @return all Ingredients in the ingredient table
+	 */
 	public List<Ingredient> getAll() {
 		try {
 			return ingRepo.getAll();

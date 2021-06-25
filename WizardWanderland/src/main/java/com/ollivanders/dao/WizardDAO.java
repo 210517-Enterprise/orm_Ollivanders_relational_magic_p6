@@ -15,6 +15,11 @@ public class WizardDAO {
 	private static ClassService<Wizard> wizRepo = new ClassService<Wizard>(Wizard.class);
 	private static final Logger log = LoggerFactory.getLogger(WizardDAO.class);
 	
+	/**
+	 * 
+	 * @param wizard to be saved
+	 * @return true if wizard was saved, false otherwise
+	 */
 	public boolean save(Wizard wizard) { // adds Wizard if it doesn't exist or updated if it does
 		try {
 			wizRepo.save(wizard);
@@ -25,6 +30,11 @@ public class WizardDAO {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param wizard to be deleted from table
+	 * @return true if wizard was deleted, false otherwise
+	 */
 	public boolean delete(Wizard wizard) { // delete Wizard if it exists
 		try {
 			wizRepo.delete(wizard);
@@ -35,6 +45,11 @@ public class WizardDAO {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param wizard to check existence of
+	 * @return true if wizard exist, false otherwise
+	 */
 	public boolean exists(Wizard wizard) { // find if Wizard exists
 		try {
 			return wizRepo.isInstanceSaved(wizard);
@@ -43,7 +58,12 @@ public class WizardDAO {
 		}
 		return false;
 	}
-
+	
+	/**
+	 * 
+	 * @param filterBy Map by Key,Value pair where Key=table_column_name
+	 * @return List of Wizards that match the filter
+	 */
 	public List<Wizard> find(Map<String, Object> filterBy) { // find wizard by field
 		try {
 			return wizRepo.find(filterBy);
@@ -53,6 +73,10 @@ public class WizardDAO {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @return all Wizards in the wizard table
+	 */
 	public List<Wizard> getAll() {
 		try {
 			return wizRepo.getAll();
