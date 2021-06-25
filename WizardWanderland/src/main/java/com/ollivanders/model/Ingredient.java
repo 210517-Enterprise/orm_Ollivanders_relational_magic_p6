@@ -3,6 +3,7 @@ package com.ollivanders.model;
 import com.ollivanders.annotations.Column;
 import com.ollivanders.annotations.Entity;
 import com.ollivanders.annotations.Id;
+import com.ollivanders.repos.SQLType;
 
 @Entity(tableName="ingredient")
 public class Ingredient {
@@ -10,10 +11,10 @@ public class Ingredient {
 	@Id(columnName="name_id", isSerial = false, isUnique = true)
 	private String name;
 	
-	@Column(columnName="type")
+	@Column(columnName="type", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String type;
 	
-	@Column(columnName="cost")
+	@Column(columnName="cost", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private double cost;
 	
 	public Ingredient() {
