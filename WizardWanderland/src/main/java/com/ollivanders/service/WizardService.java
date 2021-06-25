@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ollivanders.dao.WizardDAO;
-import com.ollivanders.model.Ingredient;
 import com.ollivanders.model.Wizard;
 
 public class WizardService {

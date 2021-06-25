@@ -5,6 +5,7 @@ import java.sql.Date;
 import com.ollivanders.annotations.Column;
 import com.ollivanders.annotations.Entity;
 import com.ollivanders.annotations.Id;
+import com.ollivanders.repos.SQLType;
 
 @Entity(tableName="wizard")
 public class Wizard {
@@ -12,13 +13,13 @@ public class Wizard {
 	@Id(columnName="id", isSerial = true, isUnique = true)
 	private int id;
 	
-	@Column(columnName="first_name")
+	@Column(columnName="first_name", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String firstName;
 	
-	@Column(columnName="last_name")
+	@Column(columnName="last_name", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String lastName;
 	
-	@Column(columnName="birthdate")
+	@Column(columnName="birthdate", columnConstraint = SQLConstraints.NONE, columnType = SQLType.DATE)
 	private Date birthdate;
 	
 	public Wizard() {
