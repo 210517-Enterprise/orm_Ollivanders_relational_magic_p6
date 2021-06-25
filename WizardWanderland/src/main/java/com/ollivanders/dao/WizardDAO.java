@@ -1,12 +1,12 @@
 package com.ollivanders.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ollivanders.model.Ingredient;
 import com.ollivanders.model.Wizard;
 import com.ollivanders.services.ClassService;
 
@@ -53,6 +53,14 @@ public class WizardDAO {
 		return null;
 	}
 	
+	public List<Wizard> getAll() {
+		try {
+			return wizRepo.getAll();
+		} catch (Exception e) {
+			log.warn("Unable to get all ingredients" + e);
+		}
+		return new ArrayList<Wizard>();
+	}
 }
 
 

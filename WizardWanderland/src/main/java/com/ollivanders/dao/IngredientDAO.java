@@ -1,5 +1,6 @@
 package com.ollivanders.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,12 +50,20 @@ public class IngredientDAO {
 		} catch (Exception e) {
 			log.warn("Unable to find ingredients using: " + filterBy.toString());
 		}
-		return null;
+		return new ArrayList<Ingredient>();
+	}
+	
+	public List<Ingredient> getAll() {
+		try {
+			return ingRepo.getAll();
+		} catch (Exception e) {
+			log.warn("Unable to get all ingredients" + e);
+		}
+		return new ArrayList<Ingredient>();
 	}
 	
 
 }
-
 
 
 
