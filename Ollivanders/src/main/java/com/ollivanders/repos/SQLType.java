@@ -1,5 +1,9 @@
 package com.ollivanders.repos;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.ollivanders.exceptions.InvalidSQLType;
 
 /**

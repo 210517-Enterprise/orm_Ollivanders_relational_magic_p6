@@ -8,13 +8,13 @@ import java.util.List;
  * functionality for a variety of CRUD operations.
  * 
  * @param <T> the element type that will be accessed in the database.
+ * @author Kyle Castillo
  */
 public interface CrudRepository<T> {
 	
 	/**
 	 * Creates a table of the specified object
 	 */
-	
 	void createClassTable() throws NoSuchFieldException, SQLException;
 	
 	/**
@@ -26,15 +26,6 @@ public interface CrudRepository<T> {
 	List<T> getAll() throws SQLException;
 	
 	/**
-	 * Gets all entries joined on a table.
-	 * FIXME for now the default is inner join.
-	 * @param otherTableObj a separate table object to join on
-	 * @return list of entries that match an inner join.
-	 * @throws SQLException
-	 */
-	List<T> getAllJoined(T otherTableObj) throws SQLException;
-	
-	/**
 	 * Removes a table with the specified object.
 	 * @param cascade specifies whether to allow cascade deleting or not.
 	 */
@@ -44,7 +35,7 @@ public interface CrudRepository<T> {
 	 * Saves a specified object.
 	 * @param newObj
 	 */
-	void saveNewToClassTable(T newObj);
+	T saveNewToClassTable(T newObj);
 	
 	
 	/**
@@ -75,9 +66,7 @@ public interface CrudRepository<T> {
 	 * @return returns true if changed, false if anything else happens.
 	 */
 	boolean updateByPrimaryKey(T updatedObj);
-	
-	//FIXME While I don't THINK that updating via columns would be good it may be needed.
-	
+		
 	/**
 	 * Removes the object from the database based on the primaryKey
 	 * @param primaryKey the key used to locate the entry from the database
