@@ -12,7 +12,6 @@ import com.ollivanders.repos.SQLType;
  */
 public class Person {
 	
-	@Id(columnName="id", isSerial=true,isUnique=true)
 	@Column(columnName="id",columnType = SQLType.SERIAL, columnConstraint = SQLConstraints.PRIMARY_KEY)
 	public Integer id;
 	@Column(columnName = "name", columnType = SQLType.VARCHAR, columnConstraint = SQLConstraints.NONE)

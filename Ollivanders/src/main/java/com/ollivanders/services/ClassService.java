@@ -67,8 +67,9 @@ public class ClassService<T> {
 	 * If the object does not exist in the class table then its inserted.<br>
 	 * If the object is in class table then it is updated.
 	 * @param save the object instance being saved to tClass
+	 * @return T the object that was either inserted into the database (now with the primary key), the same object if it was updated, or null if something went wrong.
 	 */
-	public void save(T save) {
+	public T save(T save) {
 		
 		//Acquires the primary key or null if it doesn't exist.
 		Object pk = getPrimaryKey(save);
@@ -76,14 +77,15 @@ public class ClassService<T> {
 		try {
 			//If the primary key does not exist or nothing is found the instance is inserted.
 			if(repo.findByPrimaryKey(pk) == null || pk == null)
-				repo.saveNewToClassTable(save);
+				return repo.saveNewToClassTable(save);
 			
 			//Otherwise the value is updated based on its primary key.
 			else
-				repo.updateByPrimaryKey(save);
+				 return (repo.updateByPrimaryKey(save) ? save : null);
 		} catch (SQLException | NoSuchFieldException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 	

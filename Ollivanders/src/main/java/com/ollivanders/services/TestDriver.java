@@ -22,14 +22,17 @@ public class TestDriver {
 		
 		cs.save(p);
 		
-		p.setId(1); //Purely for testing
+//		p.setId(1); //Purely for testing
 		
 		p.setAge(22);
 		
 		cs.save(p); //Checking to see if updating works
 		
+		System.out.println("Is bob saved? " + cs.isInstanceSaved(p));
+		
 		Map<String,Object> findByName = new HashMap<String,Object>();
 		findByName.put("name", "Bob");
+		
 		findByName.put("age", 21);
 		
 		ArrayList<Person> people = cs.find(findByName);
