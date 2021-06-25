@@ -13,7 +13,8 @@ import com.ollivanders.exceptions.InvalidSQLType;
  *
  */
 public enum SQLType {
-	INTEGER, SERIAL, VARCHAR, BOOLEAN;
+	INTEGER, SERIAL, VARCHAR, BOOLEAN, DECIMAL, DATE;
+	
 	
 	/**
 	 * Convience method that 
@@ -28,9 +29,13 @@ public enum SQLType {
 		case SERIAL:
 			return "SERIAL";
 		case VARCHAR:
-			return "VARCHAR";
+			return "VARCHAR(50)";
 		case BOOLEAN:
 			return "BOOLEAN";
+		case DECIMAL:
+			return "DECIMAL";
+		case DATE:
+			return "DATE";
 		default:
 			throw new InvalidSQLType();
 		}

@@ -171,7 +171,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T>{
 	 * Inserts a new object to the tClass table. The method will first get
 	 * the fields of the class and format it as a string 
 	 * @param newObj is the object that is going to be inserted into the DB.
-	 * @return 
+	 * @return The object that was inserted into the DB with the updated primary key.
 	 */
 	@Override
 	public T saveNewToClassTable(T newObj) {
