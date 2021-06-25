@@ -18,7 +18,7 @@ public class IngredientsService {
 	
 	/**
 	 * 
-	 * @return all ingredients from ingredients table
+	 * @return all ingredients from ingredient table
 	 */
 	public List<Ingredient> getAll() {
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
@@ -65,7 +65,7 @@ public class IngredientsService {
 		try {
 			log.info("Attempting to save "+ ingredient.toString());
 			if(!ingDAO.exists(ingredient)) {
-				log.info("Saving ingredient is overwriting old another ingredient...");
+				log.info("Saving ingredient is overwriting old ingredient...");
 			}
 			else {
 				log.info("Saving ingredient as a new ingredient...");
