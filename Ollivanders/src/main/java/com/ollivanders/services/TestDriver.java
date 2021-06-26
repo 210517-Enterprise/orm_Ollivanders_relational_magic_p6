@@ -14,15 +14,16 @@ import java.util.Map;
 public class TestDriver {
 
 	public static void main(String[] args) {
-		Person p = new Person("Bob",20);
+		Person p = new Person("Bob",20,1);
 		ClassService<Person> cs = new ClassService<>(Person.class);
 		
 		cs.dropClassTable();   //This should remove the class table
 		cs.createClassTable(); //This should make a person table
+		cs.setParentClassTable(cs);
 		
 		cs.save(p);
 		
-//		p.setId(1); //Purely for testing
+		p.setId(1); //Purely for testing
 		
 		p.setAge(22);
 		

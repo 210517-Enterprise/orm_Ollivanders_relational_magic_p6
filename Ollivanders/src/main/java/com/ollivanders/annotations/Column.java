@@ -10,6 +10,7 @@ import com.ollivanders.repos.SQLType;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
+
 public @interface Column {
 	String columnName();
 	SQLType columnType();

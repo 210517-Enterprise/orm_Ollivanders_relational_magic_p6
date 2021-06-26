@@ -74,4 +74,5 @@ public interface CrudRepository<T> {
 	 * @return returns true if the entry is deleted, false if anything else occurs.
 	 */
 	boolean deleteByPrimaryKey(Object primaryKey, boolean cascade) throws NoSuchFieldException, SQLException;
+	
 }
