@@ -32,7 +32,7 @@ public class ColumnField {
     public String getRowAsString() {
         String line = columnName+" "+ SQLType.stringRepresentation(columnType);
        
-        if (constraint != null) {
+        if (constraint != null && !constraint.equals(SQLConstraints.FOREIGN_KEY)) { //Foreign key relationships are not established
             line = line+" "+ SQLConstraints.stringReprestation(constraint)+",";
         } else {
             line += ",";

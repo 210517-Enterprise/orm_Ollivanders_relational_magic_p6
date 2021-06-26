@@ -66,7 +66,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 	public boolean hasClassTable() {
 		return hasClassTable;
 	}
-	
+
 	public String getClassTableName() {
 		return tClass.getSimpleName().toLowerCase();
 	}
@@ -111,15 +111,15 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 	 * current class table the constraint will not be added and the table class will
 	 * not be made.
 	 * 
-	 * @param foreignTable the foreign key table that the 
+	 * @param parentTable the foreign key table that the
 	 */
-	public void createClassTable(GenericClassReposistory<T> foreignTable) {
+	public void createClassTable(GenericClassReposistory<T> parentTable) {
 
 		// Ensure that the foreignTable Repo exists.
-		assert foreignTable != null : "The foreign table repo does not exist";
+		assert parentTable != null : "The foreign table repository does not exist";
 
 		// Ensure that the foreignTable has a class table
-		assert foreignTable.hasClassTable != false : "The foreign table does not exist";
+		assert parentTable.hasClassTable != false : "The foreign table does not exist";
 
 		// Get the column fields of the class table.
 		ColumnField[] columns = getColumnFields();
@@ -128,15 +128,14 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		// foreignTable
 		try {
 			Field tClassFK = getFKField();
-			Field tForeignPK = foreignTable.getPKField();
+			Field tForeignPK = parentTable.getPKField();
 
 			// Ensure that the SQL Types match
 			if (tClassFK.getAnnotation(Column.class).columnType()
 					.equals(tForeignPK.getAnnotation(Column.class).columnType())) {
 				// Create the class table
 				createClassTable();
-				setFKConstraint(tClassFK, tForeignPK, foreignTable.getClassTableName());
-				// Establish foreign key relationship to the foreignTable.
+				setParentTable(parentTable);
 
 			} else {
 				throw new SQLException("The foreign key and primary key data types do not match");
@@ -147,21 +146,45 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 
 	}
 
-	private void setFKConstraint(Field fkField, Field pkField, String parentClassName) {
+	/**
+	 * Allows you to set a foreign key constraint on tClass.
+	 * @apiNote The foreign key will always reference the primary key of the parent class table.
+	 * @param parentTable the foreign table that the constraint will be made on
+	 */
+	public void setParentTable(GenericClassReposistory<T> parentTable) {
 
-		// Creating the SQL query.
-		StringBuilder sql = new StringBuilder("ALTER TABLE " + tClass.getSimpleName().toLowerCase() + " ADD CONSTRAINT "
-				+ fkField.getName() + "_FK " + "FOREIGN KEY " + fkField.getName() + " REFERENCES " + parentClassName
-				+ " " + pkField.getName());
+		Field tClassFK;
+		Field tParentPK;
 
-		// Establish the Connection to the DB and execute the query.
 		try {
-			Connection conn = ConnectionUtil.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql.toString().toLowerCase());
-			System.out.println("Current query string: " + sql.toString().toLowerCase());
-			pstmt.execute();
-			hasClassTable = true;
-		} catch (SQLException e) {
+			//Find the primary and foreign keys for their respective tables
+			tClassFK = getFKField();
+			tParentPK = parentTable.getPKField();
+			
+			//Ensure that both the class table have a foreign key and primary key.
+			assert tClassFK != null : "There is no foreign key for the class table";
+			assert tParentPK != null : "There is no publi key for the foreign class table";
+			
+			//Check to make sure the data types match.
+			if (tClassFK.getAnnotation(Column.class).columnType()
+					.equals(tParentPK.getAnnotation(Column.class).columnType())) {
+
+				// Creating the SQL query.
+				StringBuilder sql = new StringBuilder("ALTER TABLE " + tClass.getSimpleName().toLowerCase()
+						+ " ADD CONSTRAINT " + tClassFK.getName() + "_FK " + "FOREIGN KEY " + tClassFK.getName()
+						+ " REFERENCES " + parentTable.getClassTableName() + " " + tParentPK.getName());
+
+				// Establish the Connection to the DB and execute the query.
+
+				Connection conn = ConnectionUtil.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql.toString().toLowerCase());
+				System.out.println("Current query string: " + sql.toString().toLowerCase());
+				pstmt.execute();
+
+			} else {
+				throw new SQLException("The foreign key and primary key data type do not match");
+			}
+		} catch (NoSuchFieldException | SQLException e) {
 			e.printStackTrace();
 		}
 	}

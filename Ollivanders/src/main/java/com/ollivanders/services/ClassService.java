@@ -32,11 +32,23 @@ public class ClassService<T> {
 		this.tClass = tClass;
 	}
 	
+	public Class<T> getClassTable(){
+		return tClass;
+	}
+	
+	public GenericClassReposistory<T> getRepo(){
+		return repo;
+	}
+	
 	/**
 	 * Creates a class table if one does not exist already.
 	 */
 	public void createClassTable() {
 		repo.createClassTable();
+	}
+	
+	public void createClassTable(ClassService<T> parent) {
+		repo.createClassTable(parent.getRepo());
 	}
 	
 	/**
@@ -45,6 +57,8 @@ public class ClassService<T> {
 	public void dropClassTable() {
 		repo.dropClassTable(true);
 	}
+	
+	
 	
 	/**
 	 * Drops the class table will maintaining foreign key references
@@ -60,6 +74,15 @@ public class ClassService<T> {
 	public void dropThenCreateClassTable() {
 		repo.dropClassTable(true);
 		repo.createClassTable();
+	}
+	
+	public void dropThenCreateClassTable(ClassService<T> parent) {
+		repo.dropClassTable(true);
+		repo.createClassTable(parent.getRepo());
+	}
+	
+	public void setParentClassTable(ClassService<T> parent) {
+		repo.setParentTable(parent.getRepo());
 	}
 	
 	/**
