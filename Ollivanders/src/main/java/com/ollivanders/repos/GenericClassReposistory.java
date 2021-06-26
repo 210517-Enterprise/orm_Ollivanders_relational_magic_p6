@@ -131,8 +131,10 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 			Field tForeignPK = parentTable.getPKField();
 
 			// Ensure that the SQL Types match
-			if (tClassFK.getAnnotation(Column.class).columnType()
-					.equals(tForeignPK.getAnnotation(Column.class).columnType())) {
+			//Note Integer is equal to serial.
+			if ((tClassFK.getAnnotation(Column.class).columnType().equals(tForeignPK.getAnnotation(Column.class).columnType())) || 
+					(tClassFK.getAnnotation(Column.class).columnType().equals(SQLType.INTEGER) 
+							&& tForeignPK.getAnnotation(Column.class).columnType().equals(SQLType.SERIAL))) {
 				// Create the class table
 				createClassTable();
 				setParentTable(parentTable);
@@ -165,15 +167,16 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 			assert tClassFK != null : "There is no foreign key for the class table";
 			assert tParentPK != null : "There is no publi key for the foreign class table";
 			
-			//Check to make sure the data types match.
-			if (tClassFK.getAnnotation(Column.class).columnType()
-					.equals(tParentPK.getAnnotation(Column.class).columnType())) {
+			// Ensure that the SQL Types match
+			//Note Integer is equal to serial.
+			if ((tClassFK.getAnnotation(Column.class).columnType().equals(tParentPK.getAnnotation(Column.class).columnType())) || 
+					(tClassFK.getAnnotation(Column.class).columnType().equals(SQLType.INTEGER) 
+							&& tParentPK.getAnnotation(Column.class).columnType().equals(SQLType.SERIAL))) {
 
 				// Creating the SQL query.
 				StringBuilder sql = new StringBuilder("ALTER TABLE " + tClass.getSimpleName().toLowerCase()
-						+ " ADD CONSTRAINT " + tClassFK.getName() + "_FK " + "FOREIGN KEY " + tClassFK.getName()
-						+ " REFERENCES " + parentTable.getClassTableName() + " " + tParentPK.getName());
-
+						+ " ADD CONSTRAINT " + tClassFK.getName() + "_FK " + "FOREIGN KEY (" + tClassFK.getName() + ")"
+						+ " REFERENCES " + parentTable.getClassTableName() + " (" + tParentPK.getName() + ");");
 				// Establish the Connection to the DB and execute the query.
 
 				Connection conn = ConnectionUtil.getConnection();
@@ -728,7 +731,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 
 		// Acquires the list of fields given by the class table.
 		List<Field> fields = new ArrayList<Field>(Arrays.asList(tClass.getFields()));
-
+		boolean hasPrimaryKey = false;
 		// For each field in the tClass, loop through and add them to an array.
 		ColumnField[] columns = new ColumnField[fields.size()];
 		int index = 0;
@@ -759,8 +762,14 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 								throw new SQLException("Column name contains invalid characters");
 
 							tClassColumn = new ColumnField(c.columnName(), c.columnType(), c.columnConstraint());
+							if(tClassColumn.getConstraint().equals(SQLConstraints.PRIMARY_KEY))
+								hasPrimaryKey = true;
 						}
 					}
+					
+					//Check to see if a primary key is required and if one exists.
+					if(allowNoPrimaryKey == false && hasPrimaryKey != true)
+						throw new SQLException("No primary key found in the class table");
 				}
 
 				columns[index] = tClassColumn;
