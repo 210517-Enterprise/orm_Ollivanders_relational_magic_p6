@@ -15,7 +15,7 @@ public class Ingredient {
 	private String type;
 	
 	@Column(columnName="cost", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
-	private double cost = 0;
+	private int cost = 0;
 	
 	public Ingredient() {
 		super();
@@ -26,7 +26,7 @@ public class Ingredient {
 		this.type = type;
 	}
 
-	public Ingredient(String type, String name, double cost) {
+	public Ingredient(String type, String name, int cost) {
 		super();
 		this.name = name;
 		this.type = type;
@@ -85,11 +85,11 @@ public class Ingredient {
 		this.type = type;
 	}
 
-	public double getCost() {
+	public int getCost() {
 		return cost;
 	}
 
-	public void setCost(double cost) {
+	public void setCost(int cost) {
 		this.cost = cost;
 	}
 

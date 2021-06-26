@@ -93,10 +93,21 @@ public class BuildWandPortal {
 		
 	}
 	
+	/**
+	 * BuildWandPortal Default Constructor
+	 */
 	public BuildWandPortal() {
 		super();
 		this.wood = new Ingredient("wood");
 		this.core = new Ingredient("core");
+	}
+	
+	/**
+	 * Find the cost of the proposed wand based off the two ingredients selected
+	 * @return Total cost of the wand
+	 */
+	public int wandCost() {
+		return (this.wood.getCost()+this.core.getCost());
 	}
 	
 	/**

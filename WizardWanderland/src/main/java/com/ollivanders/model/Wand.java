@@ -21,7 +21,7 @@ public class Wand {
 	private double length;
 	
 	@Column(columnName="cost", columnConstraint = SQLConstraints.NONE, columnType = SQLType.INTEGER)
-	private double cost;
+	private int cost;
 	
 	@Column(columnName="wizard_id", columnConstraint = SQLConstraints.FOREIGN_KEY, columnType = SQLType.INTEGER)
 	private int wizard_id;
@@ -29,7 +29,7 @@ public class Wand {
 	public Wand() {
 		super();
 	}
-	public Wand(int id, String wood, String core, double cost, int wizard_id) {
+	public Wand(int id, String wood, String core, int cost, int wizard_id) {
 		super();
 		this.id = id;
 		this.wood = wood;
@@ -37,7 +37,7 @@ public class Wand {
 		this.cost = cost;
 		this.wizard_id = wizard_id;
 	}
-	public Wand(String wood, String core, double cost, int wizard_id) {
+	public Wand(String wood, String core, int cost, int wizard_id) {
 		super();
 		this.wood = wood;
 		this.core = core;
@@ -62,10 +62,10 @@ public class Wand {
 	public void setCore(String core) {
 		this.core = core;
 	}
-	public double getCost() {
+	public int getCost() {
 		return cost;
 	}
-	public void setCost(double cost) {
+	public void setCost(int cost) {
 		this.cost = cost;
 	}
 	public int getWizard_id() {
