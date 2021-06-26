@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.ollivanders.model.SQLConstraints;
 import com.ollivanders.repos.SQLType;
 
+
 public class ColumnField {
 	 //
     private String columnName;
@@ -29,11 +30,8 @@ public class ColumnField {
      * @return a string version of the column
      */
     public String getRowAsString() {
-        String line = columnName+" "+SQLType.stringRepresentation(columnType);
-        
-        if(columnType.equals(SQLType.VARCHAR)) {
-        	line = line + "(100)"; //FIXME this might need some tweaking
-        }
+        String line = columnName+" "+ SQLType.stringRepresentation(columnType);
+       
         if (constraint != null) {
             line = line+" "+ SQLConstraints.stringReprestation(constraint)+",";
         } else {

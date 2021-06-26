@@ -16,11 +16,11 @@ public class PersonTest {
 	@Column(columnName="id",columnType = SQLType.SERIAL, columnConstraint = SQLConstraints.PRIMARY_KEY)
 	public Integer id;
 	@Column(columnName = "name", columnType = SQLType.VARCHAR, columnConstraint = SQLConstraints.NONE)
-	public String name;
+	public SQLType name;
 	@Column(columnName = "age", columnType = SQLType.INTEGER, columnConstraint = SQLConstraints.NONE)
 	public Integer age;
 	
-	public PersonTest(String name, int age) {
+	public PersonTest(SQLType name, int age) {
 		super();
 		this.name = name;
 		this.age = age;
@@ -30,11 +30,11 @@ public class PersonTest {
 		super();
 	}
 
-	public String getName() {
+	public SQLType getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(SQLType name) {
 		this.name = name;
 	}
 	

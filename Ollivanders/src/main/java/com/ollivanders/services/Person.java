@@ -1,7 +1,6 @@
 package com.ollivanders.services;
 
 import com.ollivanders.annotations.Column;
-import com.ollivanders.annotations.Id;
 import com.ollivanders.model.SQLConstraints;
 import com.ollivanders.repos.SQLType;
 
