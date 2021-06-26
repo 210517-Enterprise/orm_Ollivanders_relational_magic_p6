@@ -6,6 +6,10 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ollivanders.presentation.BuildWandPortal;
+import com.ollivanders.presentation.BuyWandPortal;
+import com.ollivanders.presentation.OllivanderPortal;
+
 public class Driver {
 	
 	private static final Logger log = LoggerFactory.getLogger(Driver.class);
@@ -51,25 +55,25 @@ public class Driver {
 			scan.nextLine();
 			
 			switch(userOption) {
-			case 1:
-				
+			case 1: // Build Wand
+				BuildWandPortal.run(scan);
 				break;
-			case 2:
-				
+			case 2: // Purchase Wand
+				BuyWandPortal.run(scan);
 				break;
-			case 3:
-				
+			case 3: // Leave Store
+				userOption = -5555; // number that breaks the do-while loop
 				break;
-			case 4499:
-				
-			default:
+			case 4499: // unlisted option for Ollivander
+				OllivanderPortal.run(scan);
+			default: // loop back if invalid input
 				userOption = 0;
 				System.out.println("Invalid input... select valid option( ex: 1 )");
 			}
 			
 			
 			
-		} while(userOption>=0 && userOption<=3);
+		} while(userOption>=0 && userOption<=3 || userOption == 4499);
 		
 	}
 	
@@ -81,9 +85,9 @@ public class Driver {
 		System.out.println("");
 		System.out.println("+++ Customer Options +++");
 		System.out.println("===========================");
-		System.out.println("1. View Wand Ingredients");
-		System.out.println("2. Purchase Wand");
-		System.out.println("3. Leave Store");
+		System.out.println("[1] Build Wand");
+		System.out.println("[2] Purchase Wand");
+		System.out.println("[3] Leave Store");
 		System.out.println("");
 		System.out.println("Please select an option...(1,2,3)");
 		System.out.println("");

@@ -95,6 +95,11 @@ public class IngredientsService {
 		return result;
 	}
 	
+	
+	public boolean exists(Ingredient ingredient) {
+		return ingDAO.exists(ingredient);
+	}
+	
 }
 
 
