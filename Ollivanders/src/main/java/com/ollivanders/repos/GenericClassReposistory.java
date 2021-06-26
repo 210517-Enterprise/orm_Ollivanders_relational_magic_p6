@@ -87,10 +87,15 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 			String line = c.getRowAsString();
 			queryStr.append(line);
 		}
+		
+		System.out.println("DDL before removing ," + queryStr.toString());
+		
+		
 
 		// Replace the last comma with the closing part of a SQL query.
 		queryStr.replace(queryStr.lastIndexOf(","), queryStr.length(), ");");
-
+		
+		System.out.println("DDL after removing ," + queryStr.toString());
 		// Establish the Connection to the DB and execute the query.
 		try {
 			Connection conn = ConnectionUtil.getConnection();
@@ -113,7 +118,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 	 * 
 	 * @param parentTable the foreign key table that the
 	 */
-	public void createClassTable(GenericClassReposistory<T> parentTable) {
+	public void createClassTable(GenericClassReposistory parentTable) {
 
 		// Ensure that the foreignTable Repo exists.
 		assert parentTable != null : "The foreign table repository does not exist";
@@ -137,7 +142,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 							&& tForeignPK.getAnnotation(Column.class).columnType().equals(SQLType.SERIAL))) {
 				// Create the class table
 				createClassTable();
-				setParentTable(parentTable);
+				setParentTables(parentTable);
 
 			} else {
 				throw new SQLException("The foreign key and primary key data types do not match");
@@ -153,30 +158,39 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 	 * @apiNote The foreign key will always reference the primary key of the parent class table.
 	 * @param parentTable the foreign table that the constraint will be made on
 	 */
-	public void setParentTable(GenericClassReposistory<T> parentTable) {
+	public void setParentTables(GenericClassReposistory...parentTable) {
 
-		Field tClassFK;
-		Field tParentPK;
+		List<Field> tClassFK;
+		List<Field> tParentPK = new ArrayList<>();
+		List<String> tParentTableNames = new ArrayList<>();
 
 		try {
 			//Find the primary and foreign keys for their respective tables
-			tClassFK = getFKField();
-			tParentPK = parentTable.getPKField();
+			tClassFK = getFKFields();
 			
-			//Ensure that both the class table have a foreign key and primary key.
+			//Acquire all primary keys from the parent tables.
+			for(GenericClassReposistory parent : parentTable) {
+				tParentPK.add(parent.getPKField());
+				tParentTableNames.add(parent.getClassTableName());
+			}
+			
+			//Ensure that both the class table and the parent tables have a foreign keys and primary keys.
 			assert tClassFK != null : "There is no foreign key for the class table";
-			assert tParentPK != null : "There is no publi key for the foreign class table";
+			assert tParentPK != null && !tParentPK.isEmpty(): "There is no public keys for the parent class tables.";
+			assert tClassFK.size() == tParentPK.size() : "Primary key and foreign key amounts do not match";
 			
-			// Ensure that the SQL Types match
+			for(int i = 0; i < tClassFK.size(); i++) {
+			Field cField = tClassFK.get(i);
+			Field pField = tParentPK.get(i);
 			//Note Integer is equal to serial.
-			if ((tClassFK.getAnnotation(Column.class).columnType().equals(tParentPK.getAnnotation(Column.class).columnType())) || 
-					(tClassFK.getAnnotation(Column.class).columnType().equals(SQLType.INTEGER) 
-							&& tParentPK.getAnnotation(Column.class).columnType().equals(SQLType.SERIAL))) {
+			if ((cField.getAnnotation(Column.class).columnType().equals(pField.getAnnotation(Column.class).columnType())) || 
+					(cField.getAnnotation(Column.class).columnType().equals(SQLType.INTEGER) 
+							&& pField.getAnnotation(Column.class).columnType().equals(SQLType.SERIAL))) {
 
 				// Creating the SQL query.
 				StringBuilder sql = new StringBuilder("ALTER TABLE " + tClass.getSimpleName().toLowerCase()
-						+ " ADD CONSTRAINT " + tClassFK.getName() + "_FK " + "FOREIGN KEY (" + tClassFK.getName() + ")"
-						+ " REFERENCES " + parentTable.getClassTableName() + " (" + tParentPK.getName() + ");");
+						+ " ADD CONSTRAINT " + cField.getName() + "_FK " + "FOREIGN KEY (" + cField.getName() + ")"
+						+ " REFERENCES " + tParentTableNames.get(i) + " (" + pField.getName() + ");");
 				// Establish the Connection to the DB and execute the query.
 
 				Connection conn = ConnectionUtil.getConnection();
@@ -187,10 +201,13 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 			} else {
 				throw new SQLException("The foreign key and primary key data type do not match");
 			}
+			}
 		} catch (NoSuchFieldException | SQLException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
 
 	/**
 	 * Returns an arraylist that is every object stored in the class table
@@ -592,6 +609,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 	 * 
 	 * @return the field that is the foreign key.
 	 * @throws NoSuchFieldException if no field has the foreign key constraint.
+	 * @deprecated Replaced by getFKFields.
 	 */
 	public Field getFKField() throws NoSuchFieldException {
 		ColumnField[] columns = getColumnFields();
@@ -602,6 +620,27 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 				return tClass.getDeclaredField(c.getColumnName());
 		}
 		throw new NoSuchFieldException("Class does not have a column with a foreign key constraint");
+	}
+	
+	/**
+	 * Helper method to find the fields that are labeled as foreign keys.
+	 * @return A list containing all foreign keys.
+	 * @throws NoSuchFieldException if no field is found with a foreign key constraint.
+	 */
+	public ArrayList<Field> getFKFields() throws NoSuchFieldException{
+		ColumnField[] columns = getColumnFields();
+		
+		ArrayList<Field> foreignKeys = new ArrayList<Field>();
+		
+		for(ColumnField c : columns) {
+			if(c.getConstraint().equals(SQLConstraints.FOREIGN_KEY))
+				foreignKeys.add(tClass.getDeclaredField(c.getColumnName()));
+		}
+		
+		if(foreignKeys.isEmpty())
+			throw new NoSuchFieldException("Class does not have any foreign key constraints");
+		
+		return foreignKeys;
 	}
 
 	private ArrayList<T> getTObjects(ResultSet rs) throws SQLException {
@@ -730,7 +769,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 	private ColumnField[] getColumnFields() {
 
 		// Acquires the list of fields given by the class table.
-		List<Field> fields = new ArrayList<Field>(Arrays.asList(tClass.getFields()));
+		List<Field> fields = new ArrayList<Field>(Arrays.asList(tClass.getDeclaredFields()));
 		boolean hasPrimaryKey = false;
 		// For each field in the tClass, loop through and add them to an array.
 		ColumnField[] columns = new ColumnField[fields.size()];
