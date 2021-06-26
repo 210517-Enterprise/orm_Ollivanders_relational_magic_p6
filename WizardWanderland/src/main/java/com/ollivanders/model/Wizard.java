@@ -10,7 +10,7 @@ import com.ollivanders.repos.SQLType;
 @Entity(tableName="wizard")
 public class Wizard {
 	
-	@Id(columnName="id", isSerial = true, isUnique = true)
+	@Column(columnName="id", columnConstraint = SQLConstraints.PRIMARY_KEY, columnType = SQLType.SERIAL)
 	private int id = -1;
 	
 	@Column(columnName="first_name", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)

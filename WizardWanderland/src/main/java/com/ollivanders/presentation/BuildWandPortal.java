@@ -11,8 +11,8 @@ import com.ollivanders.service.IngredientsService;
 
 public class BuildWandPortal {
 	
-	private String wood;
-	private String core;
+	private Ingredient wood;
+	private Ingredient core;
 	
 	private static final Logger log = LoggerFactory.getLogger(BuildWandPortal.class);
 	
@@ -20,9 +20,11 @@ public class BuildWandPortal {
 	 * Method to control user flow of selecting wand ingredients for a wand
 	 * @param scan for console inputs
 	 */
-	public static void run(Scanner scan) {
+	public void run(Scanner scan) {
 		
 		log.info("Using BuildWandPortal run method...");
+		
+		this.wood = new Ingredient();
 		
 		int userOption = 0;
 		IngredientsService ingServ = new IngredientsService();
@@ -47,7 +49,35 @@ public class BuildWandPortal {
 				printIngredientsOf(coreIngredients);
 				break;
 			case 4: // Add Ingredient to Wand
-				
+				String response = "yes";
+				do {
+					System.out.println("Ingredient name: ");
+					String iName = scan.nextLine();
+					
+					Ingredient ingredient = ingServ.getIngredient(iName);
+					if(ingredient.getName() != "placeholder") {
+						if(ingredient.getType() == "wood") {
+							this.wood = ingredient;
+							log.info("this.wood set to: " + ingredient.toString());
+						}
+						else if(ingredient.getType() == "core") {
+							this.core = ingredient;
+							log.info("this.core set to: " + ingredient.toString());
+						}
+						else { // this shouldn't ever occur
+							log.error("ingredient has an invalid type: " + ingredient.getType());
+						}
+					}
+					
+					System.out.println("Your current wand is wood="+this.wood.getName() + 
+														" and core="+ this.core.getName() +
+														" for a cost of £"+(this.wood.getCost()+this.core.getCost()));
+					System.out.println("");
+					System.out.println("Do you want to pick another/different ingredient?(yes/no)");
+					response = scan.nextLine();
+					System.out.println("");
+				} while(response == "yes" | response == "y");
+				System.out.println("");
 				break;
 			case 5: // Exit Builder (return to store options)
 				userOption = -50;
@@ -63,12 +93,17 @@ public class BuildWandPortal {
 		
 	}
 	
+	public BuildWandPortal() {
+		super();
+		this.wood = new Ingredient("wood");
+		this.core = new Ingredient("core");
+	}
 	
 	/**
 	 * 
 	 * @return current wand wood selection
 	 */
-	public String getWood() {
+	public Ingredient getWood() {
 		return wood;
 	}
 
@@ -76,7 +111,7 @@ public class BuildWandPortal {
 	 * Set wood type for wand build
 	 * @param wood
 	 */
-	public void setWood(String wood) {
+	public void setWood(Ingredient wood) {
 		this.wood = wood;
 	}
 	
@@ -85,7 +120,7 @@ public class BuildWandPortal {
 	 * 
 	 * @return current wand core selection
 	 */
-	public String getCore() {
+	public Ingredient getCore() {
 		return core;
 	}
 	
@@ -93,7 +128,7 @@ public class BuildWandPortal {
 	 * Set core type for wand build
 	 * @param core
 	 */
-	public void setCore(String core) {
+	public void setCore(Ingredient core) {
 		this.core = core;
 	}
 	
@@ -102,6 +137,7 @@ public class BuildWandPortal {
 	 */
 	public static void showBuildOptions() {
 		System.out.println("");
+		System.out.println("==============================");
 		System.out.println("+++ Wand Building Options +++");
 		System.out.println("==============================");
 		System.out.println("[1] View All Ingredients");

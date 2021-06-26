@@ -95,9 +95,28 @@ public class IngredientsService {
 		return result;
 	}
 	
-	
+	/**
+	 * Find if an ingredient exists by taking the primary key
+	 * @param ingredient to find existence of 
+	 * @return true if exists, false otherwise
+	 */
 	public boolean exists(Ingredient ingredient) {
 		return ingDAO.exists(ingredient);
+	}
+	
+	/**
+	 * Find Ingredient by the name of the ingredient
+	 * @param name of ingredient (is the primary key)
+	 * @return Ingredient that matches name
+	 */
+	public Ingredient getIngredient(String name) {
+		try {
+			log.info("Grabing ingredient: " + name);
+			return ingDAO.findByName(name);
+		} catch(Exception e) {
+			log.debug("Unable to find ingredient");
+		}
+		return new Ingredient();
 	}
 	
 }

@@ -86,6 +86,21 @@ public class IngredientDAO {
 		return new ArrayList<Ingredient>();
 	}
 	
+	/**
+	 * Find Ingredient by the name of the ingredient
+	 * @param name of ingredient (is the primary key)
+	 * @return Ingredient that matches name
+	 */
+	public Ingredient findByName(String name) {
+		try {
+			return ingRepo.findByPrimaryKey(name);
+		} catch(Exception e) {
+			log.warn("Unable to find ingredient: "+name);
+			System.out.println("Unable to find ingredient: "+name);
+		}
+		return new Ingredient();
+	}
+	
 
 }
 

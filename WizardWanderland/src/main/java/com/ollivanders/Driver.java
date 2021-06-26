@@ -48,6 +48,7 @@ public class Driver {
 		
 		// continue asking for input until user exits app
 		int userOption = 0;
+		BuildWandPortal buildWand = new BuildWandPortal();
 		do {
 			showInitialOptions();
 			
@@ -56,10 +57,11 @@ public class Driver {
 			
 			switch(userOption) {
 			case 1: // Build Wand
-				BuildWandPortal.run(scan);
+				
+				buildWand.run(scan);
 				break;
 			case 2: // Purchase Wand
-				BuyWandPortal.run(scan);
+				BuyWandPortal.run(scan, buildWand);
 				break;
 			case 3: // Leave Store
 				userOption = -5555; // number that breaks the do-while loop
@@ -82,6 +84,7 @@ public class Driver {
 	 * Console print method for showing initial store options
 	 */
 	public static void showInitialOptions() {
+		System.out.println("===========================");
 		System.out.println("");
 		System.out.println("+++ Customer Options +++");
 		System.out.println("===========================");

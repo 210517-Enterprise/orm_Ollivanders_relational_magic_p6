@@ -14,7 +14,7 @@ public class BuyWandPortal {
 	 * Method to control user flow of purchasing a wand
 	 * @param scan for console inputs
 	 */
-	public static void run(Scanner scan) {
+	public static void run(Scanner scan, BuildWandPortal WandBuild) {
 		
 		log.info("Using BuyWandPortal run method...");
 		
