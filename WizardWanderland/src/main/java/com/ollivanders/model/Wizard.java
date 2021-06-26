@@ -11,7 +11,7 @@ import com.ollivanders.repos.SQLType;
 public class Wizard {
 	
 	@Id(columnName="id", isSerial = true, isUnique = true)
-	private int id;
+	private int id = -1;
 	
 	@Column(columnName="first_name", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String firstName;

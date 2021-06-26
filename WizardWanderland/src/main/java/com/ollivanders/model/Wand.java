@@ -9,7 +9,7 @@ import com.ollivanders.repos.SQLType;
 public class Wand {
 	
 	@Id(columnName="wand_id", isSerial = true, isUnique = true)
-	private int id;
+	private int id = -1;
 	
 	@Column(columnName="last_name", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String wood;
@@ -17,10 +17,10 @@ public class Wand {
 	@Column(columnName="core", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String core;
 	
-	@Column(columnName="length", columnConstraint = SQLConstraints.NONE, columnType = SQLType.DOUBLE)
+	@Column(columnName="length", columnConstraint = SQLConstraints.NONE, columnType = SQLType.INTEGER)
 	private double length;
 	
-	@Column(columnName="cost", columnConstraint = SQLConstraints.NONE, columnType = SQLType.DOUBLE)
+	@Column(columnName="cost", columnConstraint = SQLConstraints.NONE, columnType = SQLType.INTEGER)
 	private double cost;
 	
 	@Column(columnName="wizard_id", columnConstraint = SQLConstraints.FOREIGN_KEY, columnType = SQLType.INTEGER)

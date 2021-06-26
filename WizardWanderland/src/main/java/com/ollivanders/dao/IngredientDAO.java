@@ -20,14 +20,14 @@ public class IngredientDAO {
 	 * @param ingredient to be saved
 	 * @return true if ingredient was saved, false otherwise
 	 */
-	public boolean save(Ingredient ingredient) { // adds ingredient if it doesn't exist or updated if it does
+	public Ingredient save(Ingredient ingredient) { // adds ingredient if it doesn't exist or updated if it does
 		try {
-			ingRepo.save(ingredient);
-			return true;
+			Ingredient resultIngredient = ingRepo.save(ingredient);
+			return resultIngredient;
 		} catch (Exception e) {
 			log.warn("Unable to save: " + ingredient.toString());
 		}
-		return false;
+		return new Ingredient();
 	}
 	
 	/**

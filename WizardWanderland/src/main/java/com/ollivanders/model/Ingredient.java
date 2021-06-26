@@ -9,7 +9,7 @@ import com.ollivanders.repos.SQLType;
 public class Ingredient {
 	
 	@Id(columnName="name_id", isSerial = false, isUnique = true)
-	private String name;
+	private String name = "placeholder";
 	
 	@Column(columnName="type", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String type;

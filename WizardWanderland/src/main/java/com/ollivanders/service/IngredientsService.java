@@ -70,7 +70,7 @@ public class IngredientsService {
 			else {
 				log.info("Saving ingredient as a new ingredient...");
 			}
-			result = ingDAO.save(ingredient);
+			result = (ingDAO.save(ingredient).getName() != "placeholder");
 			log.info("Save action was completed in IngredientsService");
 		} catch(Exception e) {
 			log.debug("Unable to save ingredient");
