@@ -20,14 +20,14 @@ public class WandDAO {
 	 * @param wand to be saved
 	 * @return true if wand was saved, false otherwise
 	 */
-	public boolean save(Wand wand) { // adds Wand if it doesn't exist or updated if it does
+	public Wand save(Wand wand) { // adds Wand if it doesn't exist or updated if it does
 		try {
-			wandRepo.save(wand);
-			return true;
+			Wand resultWand = wandRepo.save(wand);
+			return resultWand;
 		} catch (Exception e) {
 			log.warn("Unable to save: " + wand.toString());
 		}
-		return false;
+		return new Wand();
 	}
 	
 	/**

@@ -8,17 +8,22 @@ import com.ollivanders.repos.SQLType;
 @Entity(tableName="ingredient")
 public class Ingredient {
 	
-	@Id(columnName="name_id", isSerial = false, isUnique = true)
-	private String name;
+	@Column(columnName="name_id", columnConstraint = SQLConstraints.PRIMARY_KEY, columnType = SQLType.VARCHAR)
+	private String name = "placeholder";
 	
 	@Column(columnName="type", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String type;
 	
 	@Column(columnName="cost", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
-	private double cost;
+	private double cost = 0;
 	
 	public Ingredient() {
 		super();
+	}
+	
+	public Ingredient(String type) {
+		super();
+		this.type = type;
 	}
 
 	public Ingredient(String type, String name, double cost) {

@@ -45,7 +45,7 @@ public class WizardService {
 			else {
 				log.info("Saving wizard as a new wizard...");
 			}
-			result = wizDAO.save(wizard);
+			result = (wizDAO.save(wizard).getId() > 0);
 			log.info("Save action was completed in WizardService");
 		} catch(Exception e) {
 			log.debug("Unable to save wizard");

@@ -20,14 +20,15 @@ public class WizardDAO {
 	 * @param wizard to be saved
 	 * @return true if wizard was saved, false otherwise
 	 */
-	public boolean save(Wizard wizard) { // adds Wizard if it doesn't exist or updated if it does
+	public Wizard save(Wizard wizard) { // adds Wizard if it doesn't exist or updated if it does
 		try {
-			wizRepo.save(wizard);
-			return true;
+			Wizard resultWizard = wizRepo.save(wizard);
+			log.info("Saved wizard..." + resultWizard.toString());
+			return resultWizard;
 		} catch (Exception e) {
 			log.warn("Unable to save: " + wizard.toString());
 		}
-		return false;
+		return new Wizard();
 	}
 	
 	/**
@@ -84,6 +85,22 @@ public class WizardDAO {
 			log.warn("Unable to get all ingredients" + e);
 		}
 		return new ArrayList<Wizard>();
+	}
+	
+	/**
+	 * Find wizard using their id
+	 * @param id of wizard
+	 * @return Wizard object
+	 */
+	public Wizard findById(int id) {
+		try {
+			Wizard resultWizard = wizRepo.findByPrimaryKey(id);
+			log.info("Using id="+id+" , found " + resultWizard.toString());
+			return resultWizard;
+		} catch(Exception e) {
+			log.debug("Unable to find by id");
+		}
+		return new Wizard();
 	}
 }
 
