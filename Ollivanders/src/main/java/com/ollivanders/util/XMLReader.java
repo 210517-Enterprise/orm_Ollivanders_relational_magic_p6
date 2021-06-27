@@ -42,7 +42,7 @@ public class XMLReader {
             e.printStackTrace();
             System.exit(1);
         } catch (IOException e) {
-            System.out.println("aestivate.xml file not found in resources");
+            System.out.println("ollivander.xml file not found in resources");
             e.printStackTrace();
             System.exit(1);
         } catch (XMLParseException e) {
