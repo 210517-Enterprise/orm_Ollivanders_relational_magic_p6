@@ -23,7 +23,7 @@ public class DDL {
 		wandService.dropThenCreateClassTable();
 		
 		// Add constraints
-		wandService.setParentClassTable(ingredientService, ingredientService, wizardService);
+		wandService.setParentClassTables(ingredientService, ingredientService, wizardService);
 	}
 
 	
