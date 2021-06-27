@@ -11,7 +11,7 @@ public class Wand {
 	@Column(columnName="wand_id", columnConstraint = SQLConstraints.PRIMARY_KEY, columnType = SQLType.SERIAL)
 	private int id = -1;
 	
-	@Column(columnName="last_name", columnConstraint = SQLConstraints.FOREIGN_KEY, columnType = SQLType.VARCHAR)
+	@Column(columnName="wood", columnConstraint = SQLConstraints.FOREIGN_KEY, columnType = SQLType.VARCHAR)
 	private String wood;
 	
 	@Column(columnName="core", columnConstraint = SQLConstraints.FOREIGN_KEY, columnType = SQLType.VARCHAR)

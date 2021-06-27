@@ -10,17 +10,20 @@ public class DDL {
 	// methods for generating tables using Ollivanders-Relational-Magic (ORM)
 	
 	public static void createTables() {
-		// TODO DDL for Ingredients
+		// DDL for Ingredients
 		ClassService<Ingredient> ingredientService = new ClassService<Ingredient>(Ingredient.class);
 		ingredientService.dropThenCreateClassTable();
 	
-		// TODO DDL for Wizards
+		// DDL for Wizards
 		ClassService<Wizard> wizardService = new ClassService<Wizard>(Wizard.class);
 		wizardService.dropThenCreateClassTable();
 		
-		// TODO DDL for Wands
+		// DDL for Wands
 		ClassService<Wand> wandService = new ClassService<Wand>(Wand.class);
 		wandService.dropThenCreateClassTable();
+		
+		// Add constraints
+		wandService.setParentClassTable(ingredientService, ingredientService, wizardService);
 	}
 
 	

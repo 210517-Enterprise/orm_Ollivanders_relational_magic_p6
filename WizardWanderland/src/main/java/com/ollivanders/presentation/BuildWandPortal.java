@@ -161,6 +161,10 @@ public class BuildWandPortal {
 		System.out.println("");
 	}
 	
+	/**
+	 * Print all ingredients in a pseudo table format
+	 * @param ingredients to be printed
+	 */
 	public static void printIngredientsOf(List<Ingredient> ingredients) {
 		System.out.println("     Name     | type | Cost ");
 		ingredients.forEach((i) -> System.out.println(i.getName() + " | " 
