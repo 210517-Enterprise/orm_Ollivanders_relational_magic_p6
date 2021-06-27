@@ -78,13 +78,10 @@ Here's a blank template to get started:
 <!-- GETTING STARTED -->
 ## Features
 ### lemme know if i missed any
-* Create a new table based on the child class
-* Drop then create a table of a child class
-* Save an instance of an object as an entry
-* Update an entry in the class database
-* Delete an instance from the database
+* Ability to perform CRUD operations based on the model class
 * Find entries in the class database that satisify conditions on given columns with given values
-* Check if an entry exists of an object with then same primary key
+* Check if an entry exists of an object with the same primary key
+* Establish a foreign key constraint to parent class tables
 
 
 
@@ -119,4 +116,6 @@ sample text sample text
 * Kyle Castillo
 * Jake Geiser
 * Victor Knight
+
+* Special thanks to Nick Gianino with lockpicking magic ✨
 
