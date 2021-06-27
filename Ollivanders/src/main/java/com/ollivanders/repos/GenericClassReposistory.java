@@ -26,6 +26,8 @@ import com.ollivanders.annotations.Id;
 import com.ollivanders.model.SQLConstraints;
 import com.ollivanders.util.ColumnField;
 import com.ollivanders.util.ConnectionUtil;
+import com.ollivanders.util.PostgreSQLSessionFactory;
+import com.ollivanders.util.SessionManager;
 
 /**
  * A repository that can run CRUD operations for any instance of a class.
@@ -98,7 +100,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		System.out.println("DDL after removing ," + queryStr.toString());
 		// Establish the Connection to the DB and execute the query.
 		try {
-			Connection conn = ConnectionUtil.getConnection();
+			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(queryStr.toString().toLowerCase());
 			System.out.println("Current query string: " + queryStr.toString().toLowerCase());
 			pstmt.execute();
@@ -193,7 +195,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 						+ " REFERENCES " + tParentTableNames.get(i) + " (" + pField.getName() + ");");
 				// Establish the Connection to the DB and execute the query.
 
-				Connection conn = ConnectionUtil.getConnection();
+				Connection conn = SessionManager.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql.toString().toLowerCase());
 				System.out.println("Current query string: " + sql.toString().toLowerCase());
 				pstmt.execute();
@@ -222,7 +224,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		// Query the table to get all the objects.
 		try {
 			// Establishing a connection to the DB
-			Connection conn = ConnectionUtil.getConnection();
+			Connection conn = SessionManager.getConnection();
 
 			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM " + tClass.getSimpleName().toLowerCase());
 			ResultSet rs = pstmt.executeQuery();
@@ -257,7 +259,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		sql.append(";");
 
 		try {
-			Connection conn = ConnectionUtil.getConnection();
+			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString().toLowerCase());
 			System.out.println("Executing query: " + sql.toString().toLowerCase());
 			pstmt.execute();
@@ -301,7 +303,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 
 		try {
 			ColumnField[] columns = getColumnFields();
-			Connection conn = ConnectionUtil.getConnection();
+			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
 			int count = 1;
@@ -375,7 +377,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 
 		// Establish a connection and query the database.
 		try {
-			Connection conn = ConnectionUtil.getConnection();
+			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setObject(1, primaryKey);
 			ResultSet rs = pstmt.executeQuery();
@@ -415,7 +417,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		// Connect to the DB and attempt the query.
 
 		try {
-			Connection conn = ConnectionUtil.getConnection();
+			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setObject(1, columnName);
 			ResultSet rs = pstmt.executeQuery();
@@ -452,7 +454,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		// Connect to the DB and attempt the query.
 
 		try {
-			Connection conn = ConnectionUtil.getConnection();
+			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setObject(1, columnName);
 			ResultSet rs = pstmt.executeQuery();
@@ -487,7 +489,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 
 		// Attempt to query the DB
 		try {
-			Connection conn = ConnectionUtil.getConnection();
+			Connection conn = SessionManager.getConnection();
 			String sql = getUpdateString().toLowerCase();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 
@@ -516,7 +518,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 
 		// Establish a connection and attempt to query
 		try {
-			Connection conn = ConnectionUtil.getConnection();
+			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toLowerCase());
 			pstmt.setObject(1, primaryKey);
 			executed = pstmt.execute();
@@ -544,7 +546,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		sql.delete(index, index + 5);
 
 		try {
-			Connection conn = ConnectionUtil.getConnection();
+			Connection conn = SessionManager.getConnection();
 			PreparedStatement stmt = conn.prepareStatement(sql.toString().toLowerCase());
 
 			int counter = 1;
