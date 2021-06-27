@@ -35,7 +35,7 @@ import com.ollivanders.util.SessionManager;
  * @author Kyle Castillo
  */
 public class GenericClassReposistory<T> implements CrudRepository<T> {
-
+	private Connection conn = SessionManager.getConnection();
 	private Class<T> tClass;
 	private boolean allowNoPrimaryKey;
 	private boolean hasClassTable;
@@ -100,10 +100,11 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		System.out.println("DDL after removing ," + queryStr.toString());
 		// Establish the Connection to the DB and execute the query.
 		try {
-			Connection conn = SessionManager.getConnection();
+//			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(queryStr.toString().toLowerCase());
 			System.out.println("Current query string: " + queryStr.toString().toLowerCase());
 			pstmt.execute();
+//			conn.close();
 			hasClassTable = true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -195,10 +196,11 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 						+ " REFERENCES " + tParentTableNames.get(i) + " (" + pField.getName() + ");");
 				// Establish the Connection to the DB and execute the query.
 
-				Connection conn = SessionManager.getConnection();
+//				Connection conn = SessionManager.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql.toString().toLowerCase());
 				System.out.println("Current query string: " + sql.toString().toLowerCase());
 				pstmt.execute();
+//				conn.close();
 
 			} else {
 				throw new SQLException("The foreign key and primary key data type do not match");
@@ -224,12 +226,12 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		// Query the table to get all the objects.
 		try {
 			// Establishing a connection to the DB
-			Connection conn = SessionManager.getConnection();
+//			Connection conn = SessionManager.getConnection();
 
 			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM " + tClass.getSimpleName().toLowerCase());
 			ResultSet rs = pstmt.executeQuery();
 			objects = getTObjects(rs);
-
+//			conn.close();
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
 			System.exit(1);
@@ -259,10 +261,11 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		sql.append(";");
 
 		try {
-			Connection conn = SessionManager.getConnection();
+//			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString().toLowerCase());
 			System.out.println("Executing query: " + sql.toString().toLowerCase());
 			pstmt.execute();
+//			conn.close();
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
 		}
@@ -273,7 +276,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 	 * cascade or not.
 	 */
 	public void dropClassTable() {
-		Connection conn = ConnectionUtil.getConnection();
+//		Connection conn = ConnectionUtil.getConnection();
 
 		// Intial string of a SQL drop
 		String stmt = "DROP TABLE IF EXISTS " + tClass.getSimpleName().toLowerCase();
@@ -282,7 +285,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 			assert conn != null;
 			PreparedStatement pstmt = conn.prepareStatement(stmt);
 			pstmt.execute();
-			conn.close();
+//			conn.close();
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
 			System.exit(1);
@@ -303,21 +306,25 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 
 		try {
 			ColumnField[] columns = getColumnFields();
-			Connection conn = SessionManager.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+//			Connection conn = SessionManager.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			boolean primaryKeyIsSerial = false;
 
 			int count = 1;
 
 			for (ColumnField c : columns) {
-				if (c.getConstraint().equals(SQLConstraints.PRIMARY_KEY))
+				if (c.getConstraint().equals(SQLConstraints.PRIMARY_KEY) && c.getColumnType().equals(SQLType.SERIAL)) {
+					pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+					primaryKeyIsSerial = true;
 					continue;
+				} else if (c.getConstraint().equals(SQLConstraints.PRIMARY_KEY) && !c.getColumnType().equals(SQLType.SERIAL)) {
+					String returnKey = c.getColumnName();
+				}
+				
 				String fieldName = c.getColumnName();
 				Field fieldToStore = newObj.getClass().getDeclaredField(fieldName);
-				System.out.println("Current field: " + fieldToStore.getName());
 				Annotation[] fieldAnnotations = fieldToStore.getAnnotations();
-				for (Annotation a : fieldAnnotations) {
-					System.out.println(a.toString());
-				}
+
 				Set<Class> annoSet = new HashSet<>();
 				for (Annotation a : fieldAnnotations)
 					annoSet.add(a.getClass());
@@ -329,19 +336,24 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 				if (annoSet.contains(Id.class)) {
 					continue;
 				} else {
+					//Check to see if the primary key is serial or not.
+					
 					pstmt.setObject(count, fieldToStore.get(newObj));
 					count++;
 				}
 
 			}
-
+			System.out.println("Executing insert " + pstmt.toString());
 			pstmt.execute();
 			ResultSet rs = pstmt.getGeneratedKeys();
-			if (rs.next())
+			
+			if (rs.next() && primaryKeyIsSerial)
 				return findByPrimaryKey(rs.getObject(1));
-			else
+			else if(rs.next()) {
+				return findByPrimaryKey(rs.getObject(1));
+			}
 				return null;
-
+			
 		} catch (NoSuchFieldException | IllegalAccessException | SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -377,13 +389,14 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 
 		// Establish a connection and query the database.
 		try {
-			Connection conn = SessionManager.getConnection();
+//			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setObject(1, primaryKey);
 			ResultSet rs = pstmt.executeQuery();
 			System.out.println("Successfully located the field");
 			objs = getTObjects(rs);
-
+//			conn.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -417,11 +430,12 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		// Connect to the DB and attempt the query.
 
 		try {
-			Connection conn = SessionManager.getConnection();
+//			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setObject(1, columnName);
 			ResultSet rs = pstmt.executeQuery();
 			objects = getTObjects(rs);
+//			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -454,11 +468,12 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		// Connect to the DB and attempt the query.
 
 		try {
-			Connection conn = SessionManager.getConnection();
+//			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setObject(1, columnName);
 			ResultSet rs = pstmt.executeQuery();
 			objects = getTObjects(rs);
+//			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -489,14 +504,15 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 
 		// Attempt to query the DB
 		try {
-			Connection conn = SessionManager.getConnection();
+//			Connection conn = SessionManager.getConnection();
 			String sql = getUpdateString().toLowerCase();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 
 			// Modify the updated sql statement then execute.
 			pstmt = getPreparedUpdate(pstmt, updatedObj);
-
-			return pstmt.execute();
+			boolean excuted = pstmt.execute();
+//			conn.close();
+			return excuted;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -518,10 +534,11 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 
 		// Establish a connection and attempt to query
 		try {
-			Connection conn = SessionManager.getConnection();
+//			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toLowerCase());
 			pstmt.setObject(1, primaryKey);
 			executed = pstmt.execute();
+//			conn.close();
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
 			return false;
@@ -546,7 +563,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		sql.delete(index, index + 5);
 
 		try {
-			Connection conn = SessionManager.getConnection();
+//			Connection conn = SessionManager.getConnection();
 			PreparedStatement stmt = conn.prepareStatement(sql.toString().toLowerCase());
 
 			int counter = 1;
@@ -557,7 +574,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 			System.out.println("Query being executed: " + stmt.toString());
 			ResultSet rs = stmt.executeQuery();
 			ArrayList<T> found = getTObjects(rs);
-
+//			conn.close();
 			return found;
 
 		} catch (SQLException throwables) {
@@ -881,7 +898,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		ColumnField[] columns = getColumnFields();
 
 		for (ColumnField c : columns) {
-			if (c.getConstraint().equals(SQLConstraints.PRIMARY_KEY))
+			if (c.getConstraint().equals(SQLConstraints.PRIMARY_KEY) && c.getColumnType().equals(SQLType.SERIAL))
 				continue;
 			ib.append(c.getColumnName()).append(", ");
 			vb.append("?, ");
@@ -899,7 +916,20 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		System.out.print(ib.toString());
 		return ib.toString();
 	}
-
+	
+	public void closeConnection() {
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void openConnection() {
+		conn = SessionManager.getConnection();
+	}
+	
 	/**
 	 * Determines the SQL type of a column based on the string given of its data
 	 * type.

@@ -232,4 +232,12 @@ public class ClassService<T> {
         }
         return null;
     }
+    
+    public void closeSession() {
+    	repo.closeConnection();
+    }
+    
+    public void openSession() {
+    	repo.openConnection();
+    }
 }
