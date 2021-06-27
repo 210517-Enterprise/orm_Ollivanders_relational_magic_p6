@@ -1,0 +1,612 @@
+2021-06-27 18:27:24 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 18:27:24 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 18:27:50 INFO  ollivanders.presentation.OllivanderPortal:26 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using OllivanderPortal run method...
+2021-06-27 18:27:59 WARN  ollivanders.dao.IngredientDAO:84 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Unable to get all ingredientsjava.lang.IllegalArgumentException: Can not set int field com.ollivanders.model.Ingredient.cost to java.lang.String
+2021-06-27 18:27:59 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 18:34:25 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 18:36:24 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 18:36:24 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 18:36:32 INFO  ollivanders.presentation.OllivanderPortal:26 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using OllivanderPortal run method...
+2021-06-27 18:36:40 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 18:36:52 INFO  ollivanders.service.WizardService:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all wizards
+2021-06-27 18:36:56 INFO  ollivanders.service.WandService:54 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all wands
+2021-06-27 18:37:28 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 18:38:46 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 18:38:46 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 18:38:51 INFO  ollivanders.presentation.OllivanderPortal:26 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using OllivanderPortal run method...
+2021-06-27 18:38:55 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 18:42:07 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 18:42:07 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 18:42:17 INFO  ollivanders.presentation.OllivanderPortal:26 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using OllivanderPortal run method...
+2021-06-27 18:42:20 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 18:42:23 INFO  ollivanders.presentation.OllivanderPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving OllivanderPortal run method
+2021-06-27 18:42:28 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 18:42:31 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 18:42:37 DEBUG ollivanders.service.IngredientsService:50 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Find by type: wood was successful.
+2021-06-27 18:42:42 DEBUG ollivanders.service.IngredientsService:50 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Find by type: core was successful.
+2021-06-27 18:43:04 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 18:43:04 ERROR ollivanders.presentation.BuildWandPortal:68 - 
+otEmpty{userId= } - 
+otEmpty{event= } - ingredient has an invalid type: core
+2021-06-27 18:45:11 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 18:45:11 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 18:48:21 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 18:48:21 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 18:48:26 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 18:49:14 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 18:50:28 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 18:50:28 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 18:50:30 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 18:50:44 DEBUG ollivanders.service.IngredientsService:50 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Find by type: core was successful.
+2021-06-27 18:50:51 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 18:50:51 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=wampus cat hair, type=core, cost=703]
+2021-06-27 18:51:11 DEBUG ollivanders.service.IngredientsService:50 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Find by type: wood was successful.
+2021-06-27 18:51:22 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Pear
+2021-06-27 18:51:22 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Pear, type=wood, cost=192]
+2021-06-27 18:51:42 DEBUG ollivanders.service.IngredientsService:50 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Find by type: wood was successful.
+2021-06-27 18:51:57 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Yew
+2021-06-27 18:51:57 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Yew, type=wood, cost=108]
+2021-06-27 18:52:15 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 18:52:17 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 18:55:17 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 18:57:28 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 18:57:28 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 18:57:33 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 18:57:36 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 18:57:48 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 18:57:48 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=wampus cat hair, type=core, cost=703]
+2021-06-27 18:58:00 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Yew
+2021-06-27 18:58:00 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Yew, type=wood, cost=108]
+2021-06-27 18:58:07 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 18:58:08 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 18:59:57 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 19:00:05 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:00:05 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:00:09 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:00:15 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 19:00:15 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=wampus cat hair, type=core, cost=703]
+2021-06-27 19:00:19 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Yew
+2021-06-27 19:00:19 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Yew, type=wood, cost=108]
+2021-06-27 19:00:23 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 19:00:26 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 19:01:43 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 19:01:52 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:01:52 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:02:03 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:02:14 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 19:02:14 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=wampus cat hair, type=core, cost=703]
+2021-06-27 19:02:19 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 19:02:35 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:02:35 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:02:38 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:02:42 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 19:02:42 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=wampus cat hair, type=core, cost=703]
+2021-06-27 19:02:49 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Yew
+2021-06-27 19:02:49 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Yew, type=wood, cost=108]
+2021-06-27 19:02:53 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 19:03:15 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 19:03:29 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 19:07:24 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:07:24 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:07:28 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:07:37 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 19:07:45 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 19:07:45 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=wampus cat hair, type=core, cost=703]
+2021-06-27 19:07:52 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Yew
+2021-06-27 19:07:52 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Yew, type=wood, cost=108]
+2021-06-27 19:07:57 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 19:08:04 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 19:08:20 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 19:10:45 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:10:45 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:10:49 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:10:55 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 19:10:55 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=wampus cat hair, type=core, cost=703]
+2021-06-27 19:11:01 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Yew
+2021-06-27 19:11:01 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Yew, type=wood, cost=108]
+2021-06-27 19:11:05 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 19:11:09 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 19:11:27 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 19:12:40 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:12:40 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:12:43 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:12:59 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 19:13:02 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=wampus cat hair, type=core, cost=703]
+2021-06-27 19:13:13 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Yew
+2021-06-27 19:14:43 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Yew, type=wood, cost=108]
+2021-06-27 19:14:57 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 19:14:58 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 19:16:26 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 19:19:08 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:19:08 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:19:15 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:19:21 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 19:19:21 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=wampus cat hair, type=core, cost=703]
+2021-06-27 19:19:26 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Yew
+2021-06-27 19:19:26 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Yew, type=wood, cost=108]
+2021-06-27 19:19:32 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 19:19:33 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 19:19:49 INFO  ollivanders.service.WizardService:41 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Attempting to save Wizard [id=-1, firstName=Jake, lastName=Geiser, birthdate=1997-06-28]
+2021-06-27 19:19:49 INFO  ollivanders.service.WizardService:43 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Saving wizard is overwriting old wizard...
+2021-06-27 19:19:49 INFO  ollivanders.dao.WizardDAO:26 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Saved wizard...Wizard [id=1, firstName=Jake, lastName=Geiser, birthdate=1997-06-28]
+2021-06-27 19:19:49 INFO  ollivanders.service.WizardService:49 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Save action was completed in WizardService
+2021-06-27 19:20:02 DEBUG ollivanders.presentation.BuyWandPortal:115 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Attempt to save the wand: Wand [id=-1, wood=Yew, core=wampus cat hair, length=14, cost=811, wizard_id=-1]
+2021-06-27 19:20:02 DEBUG ollivanders.service.WandService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Invalid Wizard ID
+2021-06-27 19:20:02 INFO  ollivanders.service.WandService:30 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wizard -1 is buying Wand [id=-1, wood=Yew, core=wampus cat hair, length=14, cost=811, wizard_id=-1]
+2021-06-27 19:20:02 INFO  ollivanders.service.WandService:36 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wand was purchased
+2021-06-27 19:20:02 DEBUG ollivanders.presentation.BuyWandPortal:117 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wand save has been called in BuyWandPortal
+2021-06-27 19:21:30 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 19:27:43 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:27:43 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:27:57 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:28:15 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: l
+2021-06-27 19:28:15 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 19:29:13 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:29:13 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:29:18 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:29:23 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 19:29:34 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: wampus cat hair
+2021-06-27 19:29:34 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=wampus cat hair, type=core, cost=703]
+2021-06-27 19:29:40 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Yew
+2021-06-27 19:29:40 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Yew, type=wood, cost=108]
+2021-06-27 19:29:48 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 19:29:54 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 19:30:44 INFO  ollivanders.service.WizardService:41 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Attempting to save Wizard [id=-1, firstName=Kyle, lastName=Castillo, birthdate=1999-01-09]
+2021-06-27 19:30:44 INFO  ollivanders.service.WizardService:43 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Saving wizard is overwriting old wizard...
+2021-06-27 19:30:44 INFO  ollivanders.dao.WizardDAO:26 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Saved wizard...Wizard [id=2, firstName=Kyle, lastName=Castillo, birthdate=1999-01-09]
+2021-06-27 19:30:56 DEBUG ollivanders.presentation.BuyWandPortal:115 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Attempt to save the wand: Wand [id=-1, wood=Yew, core=wampus cat hair, length=17, cost=811, wizard_id=2]
+2021-06-27 19:30:56 INFO  ollivanders.service.WandService:30 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wizard 2 is buying Wand [id=-1, wood=Yew, core=wampus cat hair, length=17, cost=811, wizard_id=2]
+2021-06-27 19:30:56 INFO  ollivanders.service.WandService:36 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wand was purchased
+2021-06-27 19:30:56 DEBUG ollivanders.presentation.BuyWandPortal:117 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wand save has been called in BuyWandPortal
+2021-06-27 19:31:23 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:31:32 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 19:31:52 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: snallygaster heartstring
+2021-06-27 19:31:52 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=snallygaster heartstring, type=core, cost=318]
+2021-06-27 19:32:08 DEBUG ollivanders.service.IngredientsService:50 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Find by type: wood was successful.
+2021-06-27 19:32:20 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Hazel
+2021-06-27 19:32:20 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Hazel, type=wood, cost=306]
+2021-06-27 19:32:40 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 19:32:45 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 19:33:15 INFO  ollivanders.service.WizardService:41 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Attempting to save Wizard [id=-1, firstName=Victor, lastName=Knight, birthdate=1997-11-29]
+2021-06-27 19:33:15 INFO  ollivanders.service.WizardService:43 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Saving wizard is overwriting old wizard...
+2021-06-27 19:33:15 INFO  ollivanders.dao.WizardDAO:26 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Saved wizard...Wizard [id=3, firstName=Victor, lastName=Knight, birthdate=1997-11-29]
+2021-06-27 19:33:22 DEBUG ollivanders.presentation.BuyWandPortal:115 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Attempt to save the wand: Wand [id=-1, wood=Hazel, core=snallygaster heartstring, length=9, cost=624, wizard_id=3]
+2021-06-27 19:33:22 INFO  ollivanders.service.WandService:30 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wizard 3 is buying Wand [id=-1, wood=Hazel, core=snallygaster heartstring, length=9, cost=624, wizard_id=3]
+2021-06-27 19:33:22 INFO  ollivanders.service.WandService:36 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wand was purchased
+2021-06-27 19:33:22 DEBUG ollivanders.presentation.BuyWandPortal:117 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wand save has been called in BuyWandPortal
+2021-06-27 19:34:07 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:34:53 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 19:35:19 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: white river monseter spine
+2021-06-27 19:35:19 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=white river monseter spine, type=core, cost=545]
+2021-06-27 19:35:44 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Acacia
+2021-06-27 19:35:44 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Acacia, type=wood, cost=217]
+2021-06-27 19:36:14 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 19:36:16 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 19:36:42 INFO  ollivanders.dao.WizardDAO:98 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using id=1 , found Wizard [id=1, firstName=Jake, lastName=Geiser, birthdate=1997-06-28]
+2021-06-27 19:38:53 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 19:38:58 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:38:58 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:39:05 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:39:14 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: white river monseter spine
+2021-06-27 19:39:14 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=white river monseter spine, type=core, cost=545]
+2021-06-27 19:39:20 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Acacia
+2021-06-27 19:39:20 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Acacia, type=wood, cost=217]
+2021-06-27 19:39:32 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 19:39:34 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 19:39:58 INFO  ollivanders.dao.WizardDAO:98 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using id=1 , found Wizard [id=1, firstName=Jake, lastName=Geiser, birthdate=1997-06-28]
+2021-06-27 19:40:07 DEBUG ollivanders.presentation.BuyWandPortal:115 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Attempt to save the wand: Wand [id=-1, wood=Acacia, core=white river monseter spine, length=11, cost=762, wizard_id=1]
+2021-06-27 19:40:07 INFO  ollivanders.service.WandService:30 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wizard 1 is buying Wand [id=-1, wood=Acacia, core=white river monseter spine, length=11, cost=762, wizard_id=1]
+2021-06-27 19:40:07 INFO  ollivanders.service.WandService:36 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wand was purchased
+2021-06-27 19:40:07 DEBUG ollivanders.presentation.BuyWandPortal:117 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wand save has been called in BuyWandPortal
+2021-06-27 19:40:23 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
+2021-06-27 19:42:05 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:42:05 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:42:07 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:42:13 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 19:42:25 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped

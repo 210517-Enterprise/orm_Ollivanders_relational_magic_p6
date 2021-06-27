@@ -13,10 +13,12 @@ public class DDL {
 		// DDL for Ingredients
 		ClassService<Ingredient> ingredientService = new ClassService<Ingredient>(Ingredient.class);
 		ingredientService.dropThenCreateClassTable();
+		ingredientService.closeSession();
 	
 		// DDL for Wizards
 		ClassService<Wizard> wizardService = new ClassService<Wizard>(Wizard.class);
 		wizardService.dropThenCreateClassTable();
+		wizardService.closeSession();
 		
 		// DDL for Wands
 		ClassService<Wand> wandService = new ClassService<Wand>(Wand.class);
@@ -24,6 +26,8 @@ public class DDL {
 		
 		// Add constraints
 		wandService.setParentClassTables(ingredientService, ingredientService, wizardService);
+		wandService.closeSession();
+		
 	}
 
 	

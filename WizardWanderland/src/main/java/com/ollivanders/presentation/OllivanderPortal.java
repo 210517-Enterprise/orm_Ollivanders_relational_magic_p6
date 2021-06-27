@@ -51,6 +51,7 @@ public class OllivanderPortal {
 				break;
 			case 4: // Return to Store Options
 				adminOption = -50;
+				System.out.println();
 				break;
 			default: // catch any other input
 				adminOption = 0;
@@ -59,10 +60,11 @@ public class OllivanderPortal {
 			
 			
 			
-		} while(adminOption >= 0 || adminOption <=4);
+		} while(adminOption >= 0 && adminOption <=4);
 		
 		log.info("Leaving OllivanderPortal run method");
 		System.out.println("Returning to Store Options");
+		return;
 	}
 	
 	/**
@@ -109,7 +111,7 @@ public class OllivanderPortal {
 		wizards.forEach((w) -> System.out.println( w.getId() + " | "
 													+ w.getFirstName() + " "
 													+ w.getLastName() + " | "
-													+ w.getBirthdate()));
+													+ w.getBirthdate().toString()));
 		System.out.println("");
 	}
 	
