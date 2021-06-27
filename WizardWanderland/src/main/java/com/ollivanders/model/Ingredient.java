@@ -14,7 +14,7 @@ public class Ingredient {
 	@Column(columnName="type", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String type;
 	
-	@Column(columnName="cost", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
+	@Column(columnName="cost", columnConstraint = SQLConstraints.NONE, columnType = SQLType.INTEGER)
 	private int cost = 0;
 	
 	public Ingredient() {

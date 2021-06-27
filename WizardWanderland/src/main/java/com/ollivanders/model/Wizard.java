@@ -13,10 +13,10 @@ public class Wizard {
 	@Column(columnName="id", columnConstraint = SQLConstraints.PRIMARY_KEY, columnType = SQLType.SERIAL)
 	private int id = -1;
 	
-	@Column(columnName="first_name", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
+	@Column(columnName="firstName", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String firstName;
 	
-	@Column(columnName="last_name", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
+	@Column(columnName="lastName", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)
 	private String lastName;
 	
 	@Column(columnName="birthdate", columnConstraint = SQLConstraints.NONE, columnType = SQLType.DATE)

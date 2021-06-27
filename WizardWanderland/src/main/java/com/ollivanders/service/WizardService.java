@@ -35,8 +35,8 @@ public class WizardService {
 	 * @param wizard to be saved to database (either new or updated)
 	 * @return true if wizard was saved, false otherwise
 	 */
-	public boolean save(Wizard wizard) {
-		boolean result = false;
+	public Wizard save(Wizard wizard) {
+		Wizard result = wizard;
 		try {
 			log.info("Attempting to save "+ wizard.toString());
 			if(!wizDAO.exists(wizard)) {
@@ -45,12 +45,16 @@ public class WizardService {
 			else {
 				log.info("Saving wizard as a new wizard...");
 			}
-			result = (wizDAO.save(wizard).getId() > 0);
+			result = wizDAO.save(wizard);
+			if(result.getId() > 0) {
+				return result;
+			}
+
 			log.info("Save action was completed in WizardService");
 		} catch(Exception e) {
 			log.debug("Unable to save wizard");
 		}
-		return result;
+		return new Wizard();
 	}
 	
 	/**

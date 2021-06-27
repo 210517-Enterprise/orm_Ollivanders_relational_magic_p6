@@ -8,7 +8,7 @@ import com.ollivanders.repos.SQLType;
 @Entity(tableName="wand")
 public class Wand {
 	
-	@Column(columnName="wand_id", columnConstraint = SQLConstraints.PRIMARY_KEY, columnType = SQLType.SERIAL)
+	@Column(columnName="id", columnConstraint = SQLConstraints.PRIMARY_KEY, columnType = SQLType.SERIAL)
 	private int id = -1;
 	
 	@Column(columnName="wood", columnConstraint = SQLConstraints.FOREIGN_KEY, columnType = SQLType.VARCHAR)
