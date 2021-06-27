@@ -104,7 +104,7 @@ sample text sample text
 <!-- CONTACT -->
 ## Contact
 
-### Kyle Castillo - email 
+### Kyle Castillo - kylea.castillo1999@gmail.com or kylea.castillo@revature.net
 
 ### Jake Geiser - email 
 
