@@ -8,7 +8,7 @@ import com.ollivanders.repos.SQLType;
 @Entity(tableName="ingredient")
 public class Ingredient {
 	
-	@Column(columnName="name_id", columnConstraint = SQLConstraints.PRIMARY_KEY, columnType = SQLType.VARCHAR)
+	@Column(columnName="name", columnConstraint = SQLConstraints.PRIMARY_KEY, columnType = SQLType.VARCHAR)
 	private String name = "placeholder";
 	
 	@Column(columnName="type", columnConstraint = SQLConstraints.NONE, columnType = SQLType.VARCHAR)

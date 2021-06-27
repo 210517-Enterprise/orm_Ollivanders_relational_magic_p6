@@ -11,6 +11,8 @@ public class DML {
 	public static void setInitialIngredients() {
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
 		
+		System.out.println("Attempting to add Ingredients...");
+		
 		// add wood ingredients
 		ingredients.add(new Ingredient( "wood", "Acacia", 217));
 		ingredients.add(new Ingredient( "wood", "Alder", 244));
@@ -81,6 +83,7 @@ public class DML {
 		for(Ingredient ing : ingredients) {
 			ingredientService.save(ing);
 		}
+		System.out.println("Done Adding Ingredients");
 	}
 	
 
