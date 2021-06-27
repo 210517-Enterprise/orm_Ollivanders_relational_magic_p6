@@ -47,7 +47,7 @@ public class ClassService<T> {
 		repo.createClassTable();
 	}
 	
-	public void createClassTable(ClassService<T> parent) {
+	public void createClassTable(ClassService parent) {
 		repo.createClassTable(parent.getRepo());
 	}
 	
@@ -76,13 +76,20 @@ public class ClassService<T> {
 		repo.createClassTable();
 	}
 	
-	public void dropThenCreateClassTable(ClassService<T> parent) {
+	public void dropThenCreateClassTable(ClassService parent) {
 		repo.dropClassTable(true);
 		repo.createClassTable(parent.getRepo());
 	}
 	
-	public void setParentClassTable(ClassService<T> parent) {
-		repo.setParentTable(parent.getRepo());
+	public void setParentClassTables(ClassService...parents) {
+		
+		GenericClassReposistory[] parentRepos = new GenericClassReposistory[parents.length];
+		
+		for(int i = 0; i < parents.length; i++) {
+			parentRepos[i] = parents[i].getRepo();
+		}
+		
+		repo.setParentTables(parentRepos);
 	}
 	
 	/**

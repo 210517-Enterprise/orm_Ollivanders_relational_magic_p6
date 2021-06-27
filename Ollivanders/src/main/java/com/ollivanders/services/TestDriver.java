@@ -19,7 +19,7 @@ public class TestDriver {
 		
 		cs.dropClassTable();   //This should remove the class table
 		cs.createClassTable(); //This should make a person table
-		cs.setParentClassTable(cs);
+		cs.setParentClassTables(cs);
 		
 		cs.save(p);
 		
