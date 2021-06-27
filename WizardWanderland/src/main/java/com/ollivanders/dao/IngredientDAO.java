@@ -20,14 +20,14 @@ public class IngredientDAO {
 	 * @param ingredient to be saved
 	 * @return true if ingredient was saved, false otherwise
 	 */
-	public boolean save(Ingredient ingredient) { // adds ingredient if it doesn't exist or updated if it does
+	public Ingredient save(Ingredient ingredient) { // adds ingredient if it doesn't exist or updated if it does
 		try {
-			ingRepo.save(ingredient);
-			return true;
+			Ingredient resultIngredient = ingRepo.save(ingredient);
+			return resultIngredient;
 		} catch (Exception e) {
 			log.warn("Unable to save: " + ingredient.toString());
 		}
-		return false;
+		return new Ingredient();
 	}
 	
 	/**
@@ -84,6 +84,21 @@ public class IngredientDAO {
 			log.warn("Unable to get all ingredients" + e);
 		}
 		return new ArrayList<Ingredient>();
+	}
+	
+	/**
+	 * Find Ingredient by the name of the ingredient
+	 * @param name of ingredient (is the primary key)
+	 * @return Ingredient that matches name
+	 */
+	public Ingredient findByName(String name) {
+		try {
+			return ingRepo.findByPrimaryKey(name);
+		} catch(Exception e) {
+			log.warn("Unable to find ingredient: "+name);
+			System.out.println("Unable to find ingredient: "+name);
+		}
+		return new Ingredient();
 	}
 	
 

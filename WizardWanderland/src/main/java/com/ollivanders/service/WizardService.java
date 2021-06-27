@@ -45,7 +45,7 @@ public class WizardService {
 			else {
 				log.info("Saving wizard as a new wizard...");
 			}
-			result = wizDAO.save(wizard);
+			result = (wizDAO.save(wizard).getId() > 0);
 			log.info("Save action was completed in WizardService");
 		} catch(Exception e) {
 			log.debug("Unable to save wizard");
@@ -70,5 +70,22 @@ public class WizardService {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param wizard to check existence of (just need the id field filled)
+	 * @return true if wizard exist, false otherwise
+	 */
+	public boolean exists(Wizard wiz) {
+		return wizDAO.exists(wiz);
+	}
+	
+	/**
+	 * Find wizard using their id
+	 * @param id of wizard
+	 * @return Wizard object
+	 */
+	public Wizard findById(int id) {
+		return wizDAO.findById(id);
+	}
 	
 }
