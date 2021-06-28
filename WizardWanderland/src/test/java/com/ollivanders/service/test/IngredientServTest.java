@@ -27,7 +27,7 @@ public class IngredientServTest{
 
 	@Test
 	    public void sortplasteelWands() {
-	        // get only green apples from the list, using a Lambda!
+	        // get only plasteel wands from the list, using a Lambda!
 	        // also, using Collectors.toList() to get all the results into a List at the end
 	        final List<Ingredient> plasteelWands = ingredients.stream().filter(i -> i.getType().equals("plasteel")).collect(Collectors.toList());
 	        assertEquals(plasteelWands.size(), 1);
