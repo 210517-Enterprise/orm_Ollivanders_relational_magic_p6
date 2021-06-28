@@ -610,3 +610,63 @@ otEmpty{event= } - Grabbed all ingredients
 2021-06-27 19:42:25 INFO  com.ollivanders.Driver:35 - 
 otEmpty{userId= } - 
 otEmpty{event= } - Application Stopped
+2021-06-27 19:43:05 INFO  com.ollivanders.Driver:19 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Started
+2021-06-27 19:43:05 INFO  com.ollivanders.Driver:47 - 
+otEmpty{userId= } - 
+otEmpty{event= } - run method called.
+2021-06-27 19:43:17 INFO  ollivanders.presentation.BuildWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuildWandPortal run method...
+2021-06-27 19:43:19 INFO  ollivanders.service.IngredientsService:27 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabbed all ingredients
+2021-06-27 19:43:22 DEBUG ollivanders.service.IngredientsService:50 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Find by type: wood was successful.
+2021-06-27 19:43:23 DEBUG ollivanders.service.IngredientsService:50 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Find by type: core was successful.
+2021-06-27 19:43:38 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: unicorn hair
+2021-06-27 19:43:38 INFO  ollivanders.presentation.BuildWandPortal:65 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.core set to: Ingredient [name=unicorn hair, type=core, cost=681]
+2021-06-27 19:43:55 INFO  ollivanders.service.IngredientsService:114 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Grabing ingredient: Sugar Maple
+2021-06-27 19:43:55 INFO  ollivanders.presentation.BuildWandPortal:61 - 
+otEmpty{userId= } - 
+otEmpty{event= } - this.wood set to: Ingredient [name=Sugar Maple, type=wood, cost=85]
+2021-06-27 19:44:01 INFO  ollivanders.presentation.BuildWandPortal:92 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Leaving Wand Builder Portal
+2021-06-27 19:44:04 INFO  ollivanders.presentation.BuyWandPortal:25 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Using BuyWandPortal run method...
+2021-06-27 19:45:20 INFO  ollivanders.service.WizardService:41 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Attempting to save Wizard [id=-1, firstName=Hulk, lastName=Hogan, birthdate=1977-08-11]
+2021-06-27 19:45:20 INFO  ollivanders.service.WizardService:43 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Saving wizard is overwriting old wizard...
+2021-06-27 19:45:20 INFO  ollivanders.dao.WizardDAO:26 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Saved wizard...Wizard [id=4, firstName=Hulk, lastName=Hogan, birthdate=1977-08-11]
+2021-06-27 19:45:25 DEBUG ollivanders.presentation.BuyWandPortal:115 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Attempt to save the wand: Wand [id=-1, wood=Sugar Maple, core=unicorn hair, length=18, cost=766, wizard_id=4]
+2021-06-27 19:45:25 INFO  ollivanders.service.WandService:30 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wizard 4 is buying Wand [id=-1, wood=Sugar Maple, core=unicorn hair, length=18, cost=766, wizard_id=4]
+2021-06-27 19:45:26 INFO  ollivanders.service.WandService:36 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wand was purchased
+2021-06-27 19:45:26 DEBUG ollivanders.presentation.BuyWandPortal:117 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Wand save has been called in BuyWandPortal
+2021-06-27 20:26:36 INFO  com.ollivanders.Driver:35 - 
+otEmpty{userId= } - 
+otEmpty{event= } - Application Stopped
