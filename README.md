@@ -19,7 +19,7 @@ Currently Ollivanders takes in an ollivanders.xml to configure database connecti
     <a href="https://github.com/210517-Enterprise/orm_Ollivanders_relational_magic_p6"><strong>Explore the ORM »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/210517-Enterprise/orm_Ollivanders_relational_magic_p6/WizardWanderland">View Demo</a>
+    <a href="https://github.com/210517-Enterprise/orm_Ollivanders_relational_magic_p6/tree/main/WizardWanderland">View Demo</a>
     ·
     <a href="https://github.com/210517-Enterprise/orm_Ollivanders_relational_magic_p6/issues">Report Bug</a>
     ·
