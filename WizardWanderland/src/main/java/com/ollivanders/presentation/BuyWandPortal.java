@@ -30,7 +30,7 @@ public class BuyWandPortal {
 			System.out.println("Your Wand is missing Ingredients...");
 			return;
 		}
-		else if(WandBuild.getCore().getName() == "placeholder" || WandBuild.getWood().getName() == "placeholder") {
+		else if(WandBuild.getCore().getName().equals("placeholder") || WandBuild.getWood().getName().equals("placeholder")) {
 			System.out.println("Your Wand is missing Ingredients...");
 			return;
 		}
@@ -38,7 +38,7 @@ public class BuyWandPortal {
 		System.out.println("Are you sure you would like to purchase the Wand?(yes/no)");
 		String purchase = scan.nextLine();
 		
-		if(purchase.toLowerCase() != "yes" || purchase.toLowerCase() != "y") {
+		if(purchase.toLowerCase().equals("no") || purchase.toLowerCase().equals("n")) {
 			System.out.println("Returning to store options...");
 			return;
 		}
@@ -53,9 +53,9 @@ public class BuyWandPortal {
 		System.out.println("Do you have a Wizard ID?(yes/no)");
 		String haveId = scan.nextLine();
 		
-		if(haveId.toLowerCase() == "no" || haveId.toLowerCase() == "n") {
+		if(haveId.toLowerCase().equals("no") || haveId.toLowerCase().equals("n")) {
 			wizard = verifyWizard(scan);
-			wizService.save(wizard);
+			wizard = wizService.save(wizard);
 		}
 		else {
 			boolean loop = true;
@@ -73,18 +73,20 @@ public class BuyWandPortal {
 					// check if entered info matches db info
 					if(wizard.equals(wizService.findById(wizId))) {
 						loop = false;
+						System.out.println("CODE GOT HERE - "+wizard.toString());
 					}
 					else {
 						System.out.println("Information did not match our records...");
 						System.out.println("Try again?(yes/no)");
 						String response = scan.nextLine();
-						if(response.toLowerCase() == "no" || response.toLowerCase() == "n") {
+						if(response.toLowerCase().equals("no") || response.toLowerCase().equals("n")) {
 							System.out.println("Returning to store options...");
 							return;
 						}
 					}
 				}
 			} while(loop);
+			
 		}
 			
 		/* ================================================
@@ -143,7 +145,7 @@ public class BuyWandPortal {
 				continue;
 			}
 			
-			System.out.println("What is your birthday?(mm/dd/yyyy)");
+			System.out.println("What is your birthday?(yyyy-mm-dd)");
 			String birthday = scan.nextLine(); // get birthday
 			if(!isValidDate(birthday)) { // check if date is valid
 				System.out.println(birthday+" is an invalid date. Ensure format is yyyy-mm-dd");
@@ -197,8 +199,9 @@ public class BuyWandPortal {
 		}
 		
 		if(!(intarr[0]>=0 && intarr[0]<=2021)) {return false;}
-		if(!(intarr[0]>=1 && intarr[0]<=12)) {return false;}
-		if(!(intarr[1]>=1 && intarr[1]<=31)) {return false;}
+		if(!(intarr[1]>=1 && intarr[1]<=12)) {return false;}
+		if(!(intarr[2]>=1 && intarr[2]<=31)) {return false;}
+		
 		
 		return true;
 		

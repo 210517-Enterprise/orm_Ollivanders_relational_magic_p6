@@ -83,6 +83,7 @@ public class DML {
 		for(Ingredient ing : ingredients) {
 			ingredientService.save(ing);
 		}
+		ingredientService.closeSession();
 		System.out.println("Done Adding Ingredients");
 	}
 	

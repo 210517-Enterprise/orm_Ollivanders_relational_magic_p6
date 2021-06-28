@@ -56,11 +56,11 @@ public class BuildWandPortal {
 					
 					Ingredient ingredient = ingServ.getIngredient(iName);
 					if(ingredient.getName() != "placeholder") {
-						if(ingredient.getType() == "wood") {
+						if(ingredient.getType().equals("wood")) {
 							this.wood = ingredient;
 							log.info("this.wood set to: " + ingredient.toString());
 						}
-						else if(ingredient.getType() == "core") {
+						else if(ingredient.getType().equals("core")) {
 							this.core = ingredient;
 							log.info("this.core set to: " + ingredient.toString());
 						}
@@ -90,7 +90,7 @@ public class BuildWandPortal {
 		} while(userOption>=0 && userOption<=5);
 		
 		log.info("Leaving Wand Builder Portal");
-		
+		return;
 	}
 	
 	/**

@@ -19,7 +19,7 @@ Currently Ollivanders takes in an ollivanders.xml to configure database connecti
     <a href="https://github.com/210517-Enterprise/orm_Ollivanders_relational_magic_p6"><strong>Explore the ORM »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/210517-Enterprise/orm_Ollivanders_relational_magic_p6">View Demo NEEDS CLEAR PATH URL</a>
+    <a href="https://github.com/210517-Enterprise/orm_Ollivanders_relational_magic_p6/tree/main/WizardWanderland">View Demo</a>
     ·
     <a href="https://github.com/210517-Enterprise/orm_Ollivanders_relational_magic_p6/issues">Report Bug</a>
     ·
@@ -54,11 +54,8 @@ Currently Ollivanders takes in an ollivanders.xml to configure database connecti
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+Ollivanders finds its inspiration from Aestivate and Hibernate in our intial planning. We built off the general crud repo and class service models from Aestivate and used annotations to help parse SQL strings. Stretch goals include adding a join read methods functionality and supporting many to many relations through creating a reference table. An additional stretch goal would be to alter tables within the database as well.
 
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`repo_name`, `twitter_handle`, `email`, `project_title`, `project_description`
 
 
 ### Technologies Used
@@ -77,14 +74,11 @@ Here's a blank template to get started:
 
 <!-- GETTING STARTED -->
 ## Features
-### lemme know if i missed any
-* Create a new table based on the child class
-* Drop then create a table of a child class
-* Save an instance of an object as an entry
-* Update an entry in the class database
-* Delete an instance from the database
+
+* Ability to perform CRUD operations based on the model class
 * Find entries in the class database that satisify conditions on given columns with given values
-* Check if an entry exists of an object with then same primary key
+* Check if an entry exists of an object with the same primary key
+* Establish a foreign key constraint to parent class tables
 
 
 
@@ -95,18 +89,108 @@ Here's a blank template to get started:
 For Ollivanders to work, it requires an ollivander.xml file in the resources directory. This file informs Ollivander of the database type it is connecting to (eg. postgresql), the url, login, and password. In addition it takes arguments for the minimum number of connections to idle, the max number of connections to idle, and the max open prepared statements there can be.
 
 
+~~~ xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration>
+
+    <!-- Database connection info -->
+    <Database name = "postgresql">
+        <Url url="jdbc:postgresql://ollivandersdb.c9wbv7ktss7f.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=public"/>
+        <Login login="postgres"/>
+        <Password password="ollivanderspassword"/>
+        <MinIdle minIdle="5"/>
+        <MaxIdle maxIdle="100"/>
+        <maxOpenPreparedStatements maxOpen="10000"/>
+    </Database>
+
+</Configuration>
+~~~
+
 
 <!-- ROADMAP -->
 ## Usage
 
-sample text sample text
+The way Ollivander's connects to a database is by parsing a .xml file in the XMLReader class and creates a session using session manager which initializes the sessionfactory class in the util package. 
+
+Ollivander's uses the annotations Column and Entity to specify the columns within a postgresql database. below is the code snippet for the column annotation: 
+
+~~~ java
+package com.ollivanders.annotations;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.ollivanders.model.SQLConstraints;
+import com.ollivanders.repos.SQLType;
+
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+
+public @interface Column {
+	String columnName();
+	SQLType columnType();
+	SQLConstraints columnConstraint();
+}
+~~~
+
+Within the GeneralClassRepository class, we are able to create a class table and add a constraint for a foreign key.<br>
+	 * The foreign key will always reference the primary key of a separate table if
+	 * it exists. If no primary key exists in the separate table the class table
+	 * will not be created. Also if not foreign key constraint is found in the
+	 * current class table the constraint will not be added and the table class will
+	 * not be made. Shown below is our example of the create table method:
+   
+ ~~~ java
+ public void createClassTable(GenericClassReposistory parentTable) {
+
+		// Ensure that the foreignTable Repo exists.
+		assert parentTable != null : "The foreign table repository does not exist";
+
+		// Ensure that the foreignTable has a class table
+		assert parentTable.hasClassTable != false : "The foreign table does not exist";
+
+		// Get the column fields of the class table.
+		ColumnField[] columns = getColumnFields();
+
+		// Get the fields of the foreign key of the tClass and the Primary key of the
+		// foreignTable
+		try {
+			Field tClassFK = getFKField();
+			Field tForeignPK = parentTable.getPKField();
+
+			// Ensure that the SQL Types match
+			//Note Integer is equal to serial.
+			if ((tClassFK.getAnnotation(Column.class).columnType().equals(tForeignPK.getAnnotation(Column.class).columnType())) || 
+					(tClassFK.getAnnotation(Column.class).columnType().equals(SQLType.INTEGER) 
+							&& tForeignPK.getAnnotation(Column.class).columnType().equals(SQLType.SERIAL))) {
+				// Create the class table
+				createClassTable();
+				setParentTables(parentTable);
+
+			} else {
+				throw new SQLException("The foreign key and primary key data types do not match");
+			}
+		} catch (NoSuchFieldException | SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+ 
+ ~~~ 
+
+sql type constraints allowed within Ollies RM include INT, BOOL, DATE, VARCHAR, SERIAL, DECIMAL and the column constraints allowed include all except DEFAULT and CHECK as check and default has not been fully implemented. 
+
+WizardWanderland is a demo project which showcases the general functionality of Ollies and uses its own driver to manipulate data and create its own database.
 
 <!-- CONTACT -->
 ## Contact
 
 ### Kyle Castillo - kylea.castillo1999@gmail.com or kylea.castillo@revature.net
 
-### Jake Geiser - email 
+### Jake Geiser - jake.geiser@revature.net
 
 ### Victor Knight - victor.issayknight@revature.net
 ### Project Link: [https://github.com/210517-Enterprise/orm_Ollivanders_relational_magic_p6](https://github.com/210517-Enterprise/orm_Ollivanders_relational_magic_p6)
@@ -119,4 +203,6 @@ sample text sample text
 * Kyle Castillo
 * Jake Geiser
 * Victor Knight
+
+* Special thanks to Nick Gianino with lockpicking magic ✨
 
