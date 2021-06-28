@@ -25,8 +25,7 @@ import com.ollivanders.annotations.Column;
 import com.ollivanders.annotations.Id;
 import com.ollivanders.model.SQLConstraints;
 import com.ollivanders.util.ColumnField;
-import com.ollivanders.util.ConnectionUtil;
-import com.ollivanders.util.PostgreSQLSessionFactory;
+
 import com.ollivanders.util.SessionManager;
 
 /**
@@ -88,21 +87,16 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		for (ColumnField c : columns) {
 			String line = c.getRowAsString();
 			queryStr.append(line);
-		}
-		
-		System.out.println("DDL before removing ," + queryStr.toString());
-		
+		}		
 		
 
 		// Replace the last comma with the closing part of a SQL query.
 		queryStr.replace(queryStr.lastIndexOf(","), queryStr.length(), ");");
 		
-		System.out.println("DDL after removing ," + queryStr.toString());
 		// Establish the Connection to the DB and execute the query.
 		try {
 //			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(queryStr.toString().toLowerCase());
-			System.out.println("Current query string: " + queryStr.toString().toLowerCase());
 			pstmt.execute();
 //			conn.close();
 			hasClassTable = true;
@@ -121,6 +115,7 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 	 * 
 	 * @param parentTable the foreign key table that the
 	 */
+	@SuppressWarnings("rawtypes")
 	public void createClassTable(GenericClassReposistory parentTable) {
 
 		// Ensure that the foreignTable Repo exists.
@@ -136,13 +131,13 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		// foreignTable
 		try {
 			Field tClassFK = getFKField();
-			Field tForeignPK = parentTable.getPKField();
+			Field tParentPK = parentTable.getPKField();
 
 			// Ensure that the SQL Types match
 			//Note Integer is equal to serial.
-			if ((tClassFK.getAnnotation(Column.class).columnType().equals(tForeignPK.getAnnotation(Column.class).columnType())) || 
+			if ((tClassFK.getAnnotation(Column.class).columnType().equals(tParentPK.getAnnotation(Column.class).columnType())) || 
 					(tClassFK.getAnnotation(Column.class).columnType().equals(SQLType.INTEGER) 
-							&& tForeignPK.getAnnotation(Column.class).columnType().equals(SQLType.SERIAL))) {
+							&& tParentPK.getAnnotation(Column.class).columnType().equals(SQLType.SERIAL))) {
 				// Create the class table
 				createClassTable();
 				setParentTables(parentTable);
@@ -198,7 +193,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 
 //				Connection conn = SessionManager.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql.toString().toLowerCase());
-				System.out.println("Current query string: " + sql.toString().toLowerCase());
 				pstmt.execute();
 //				conn.close();
 
@@ -263,7 +257,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		try {
 //			Connection conn = SessionManager.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString().toLowerCase());
-			System.out.println("Executing query: " + sql.toString().toLowerCase());
 			pstmt.execute();
 //			conn.close();
 		} catch (SQLException throwables) {
@@ -343,7 +336,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 				}
 
 			}
-			System.out.println("Executing insert " + pstmt.toString());
 			pstmt.execute();
 			ResultSet rs = pstmt.getGeneratedKeys();
 			
@@ -393,7 +385,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setObject(1, primaryKey);
 			ResultSet rs = pstmt.executeQuery();
-			System.out.println("Successfully located the field");
 			objs = getTObjects(rs);
 //			conn.close();
 			
@@ -571,7 +562,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 				stmt.setObject(counter, entry.getValue());
 				counter++;
 			}
-			System.out.println("Query being executed: " + stmt.toString());
 			ResultSet rs = stmt.executeQuery();
 			ArrayList<T> found = getTObjects(rs);
 //			conn.close();
@@ -691,7 +681,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 			}
 
 			for (int i = 1; i <= columns.length; i++) {
-				// System.out.println("On iteration: "+i);
 				Field field = null;
 
 				String columnName = columns[i - 1].getColumnName();
@@ -702,7 +691,6 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 					e.printStackTrace();
 					System.exit(1);
 				}
-				// System.out.println("On field: "+columnName);
 
 				if (Modifier.isPrivate(field.getModifiers())) {
 					field.setAccessible(true);
@@ -913,10 +901,12 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		ib.append(") ");
 
 		ib.append(vb);
-		System.out.print(ib.toString());
 		return ib.toString();
 	}
 	
+	/**
+	 * Closes the current connection
+	 */
 	public void closeConnection() {
 		try {
 			conn.close();
@@ -926,6 +916,9 @@ public class GenericClassReposistory<T> implements CrudRepository<T> {
 		}
 	}
 	
+	/**
+	 * Opens a new connection.
+	 */
 	public void openConnection() {
 		conn = SessionManager.getConnection();
 	}

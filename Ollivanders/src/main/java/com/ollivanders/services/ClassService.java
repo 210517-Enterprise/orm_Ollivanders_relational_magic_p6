@@ -233,10 +233,16 @@ public class ClassService<T> {
         return null;
     }
     
+    /**
+     * Closes the current session, this method should be called after all actions are performed on a data base.
+     */
     public void closeSession() {
     	repo.closeConnection();
     }
     
+    /**
+     * Opens a new connection, this method should only be invoked if the session has been closed.
+     */
     public void openSession() {
     	repo.openConnection();
     }
